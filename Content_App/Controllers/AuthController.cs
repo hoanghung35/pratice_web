@@ -28,24 +28,26 @@ namespace Content_App.Controllers
                 .Include(u => u.RefreshTokens)
                 .FirstOrDefaultAsync(u => u.Username == request.Username);
 
-            if (user == null || !BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash))
-                return Unauthorized();
-
-            var accessToken = _auth.GenerateAccessToken(user);
-            var refreshToken = _auth.GenerateRefreshToken(user);
-
-            _db.RefreshTokens.Add(refreshToken);
-            await _db.SaveChangesAsync();
-
-            Response.Cookies.Append("refresh_token", refreshToken.Token, new CookieOptions
+            if (user != null && BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash))
             {
-                HttpOnly = true,
-                Secure = true,
-                SameSite = SameSiteMode.Strict,
-                Expires = refreshToken.ExpiresAt
-            });
+                var accessToken = _auth.GenerateAccessToken(user);
+                var refreshToken = _auth.GenerateRefreshToken(user);
 
-            return Ok(new AuthResponse(accessToken));
+                _db.RefreshTokens.Add(refreshToken);
+                await _db.SaveChangesAsync();
+
+                Response.Cookies.Append("refresh_token", refreshToken.Token, new CookieOptions
+                {
+                    HttpOnly = true,
+                    Secure = true,
+                    SameSite = SameSiteMode.Strict,
+                    Expires = refreshToken.ExpiresAt
+                });
+
+                return Ok(new AuthResponse(accessToken));
+            }
+
+            return Unauthorized();
         }
 
         [HttpPost("refresh")]
