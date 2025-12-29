@@ -1,0 +1,106 @@
+src/
+├── Inventory.Api
+│   ├── Controllers
+│   │   ├── AuthController.cs
+│   │   ├── ItemController.cs
+│   │   ├── OrderController.cs
+│   │   ├── ApproveController.cs
+│   │   └── ActionController.cs
+│   │
+│   ├── Filters
+│   │   └── ExceptionFilter.cs
+│   │
+│   ├── Middleware
+│   │   └── JwtFromCookieMiddleware.cs
+│   │
+│   ├── Program.cs
+│   └── appsettings.json
+│
+├── Inventory.Application
+│   ├── Abstractions
+│   │   ├── Authentication
+│   │   │   └── IJwtService.cs
+│   │   ├── Repositories
+│   │   │   ├── IItemRepository.cs
+│   │   │   ├── IOrderRepository.cs
+│   │   │   └── IApproveRepository.cs
+│   │
+│   ├── DTOs
+│   │   ├── Auth
+│   │   │   ├── LoginDto.cs
+│   │   │   └── AuthResultDto.cs
+│   │   │
+│   │   ├── Item
+│   │   │   ├── ItemDto.cs
+│   │   │   └── ItemByAreaDto.cs
+│   │   │
+│   │   ├── Order
+│   │   │   ├── CreateOrderDto.cs
+│   │   │   └── OrderDto.cs
+│   │   │
+│   │   ├── Approve
+│   │   │   └── ApproveDto.cs
+│   │
+│   ├── Services
+│   │   ├── AuthService.cs
+│   │   ├── ItemService.cs
+│   │   ├── OrderService.cs
+│   │   ├── ApproveService.cs
+│   │   └── ActionService.cs
+│   │
+│   └── Behaviors
+│       └── TransactionBehavior.cs
+│
+├── Inventory.Domain
+│   ├── Entities
+│   │   ├── Account.cs
+│   │   ├── Role.cs
+│   │   ├── Employee.cs
+│   │   ├── Department.cs
+│   │   ├── Area.cs
+│   │   ├── Item.cs
+│   │   ├── OrderItem.cs
+│   │   ├── Approve.cs
+│   │   └── ActionLog.cs
+│   │
+│   ├── Enums
+│   │   ├── RoleCode.cs
+│   │   ├── ActionStatus.cs
+│   │   └── ApproveStatus.cs
+│   │
+│   └── ValueObjects
+│       └── ItemCode.cs
+│
+├── Inventory.Infrastructure
+│   ├── Data
+│   │   ├── AppDbContext.cs
+│   │   ├── Migrations
+│   │   └── Seed
+│   │       ├── RoleSeed.cs
+│   │       ├── AreaSeed.cs
+│   │       └── DepartmentSeed.cs
+│   │
+│   ├── Repositories
+│   │   ├── ItemRepository.cs
+│   │   ├── OrderRepository.cs
+│   │   └── ApproveRepository.cs
+│   │
+│   ├── Security
+│   │   ├── JwtService.cs
+│   │   ├── PasswordHasher.cs
+│   │   └── RefreshTokenStore.cs
+│   │
+│   └── Configurations
+│       ├── AccountConfig.cs
+│       ├── ItemConfig.cs
+│       ├── OrderConfig.cs
+│       └── ApproveConfig.cs
+│
+└── Inventory.Shared
+    ├── Constants
+    │   ├── RoleConstants.cs
+    │   └── JwtClaimConstants.cs
+    │
+    └── Extensions
+        ├── GuidExtensions.cs
+        └── DateTimeExtensions.cs
