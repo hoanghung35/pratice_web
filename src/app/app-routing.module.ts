@@ -3,6 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { AuthGuard } from './core/guards/auth.guard';
 import { RoleGuard } from './core/guards/role.guard';
 import { MainLayoutComponent } from './layouts/main-layout/main-layout.component';
+import { LoginComponent } from './features/auth/login/login.component';
 
 const routes: Routes = [
   {
@@ -30,8 +31,8 @@ const routes: Routes = [
         data: { roles: ['admin', 'manager'] }
       }
     ]
-  }
-
+  },
+  { path: 'login', component: LoginComponent }
 ];
 
 @NgModule({

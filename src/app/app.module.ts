@@ -18,6 +18,7 @@ import { LoginComponent } from './features/auth/login/login.component';
 import { OrderComponent } from './features/order/order.component';
 import { ApproveComponent } from './features/approve/approve.component';
 import { MainLayoutComponent } from './layouts/main-layout/main-layout.component';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -40,7 +41,8 @@ import { MainLayoutComponent } from './layouts/main-layout/main-layout.component
     MatListModule,
     MatGridListModule,
     MatCardModule,
-    MatMenuModule
+    MatMenuModule,
+    HttpClientModule
   ],
   providers: [
     provideClientHydration(withEventReplay())
