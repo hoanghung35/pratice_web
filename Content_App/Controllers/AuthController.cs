@@ -1,10 +1,13 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Content_App.App.DTOs.Auth;
-using Content_App.App.Interfaces;
+﻿using Content_App.App.Interfaces;
+using Content_App.App.Interfaces.Authentication;
+using Content_App.App.Services;
+using Content_App.Domain.Entities;
+using Content_App.Domain.Enums;
 using Content_App.Infrastructure.Data;
-using Org.BouncyCastle.Crypto.Generators;
+using Content_App.Infrastructure.Security;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+
 
 namespace Content_App.Controllers
 {
@@ -12,95 +15,105 @@ namespace Content_App.Controllers
     [Route("api/auth")]
     public class AuthController : ControllerBase
     {
-        private readonly AppDbContext _db;
-        private readonly IAuthService _auth;
+        private readonly AuthService _authService;
+        private readonly IRefreshTokenStore _refreshStore;
+        private readonly AppDbContext _context;
+        private readonly IJwtService _jwtService;
 
-        public AuthController(AppDbContext db, IAuthService auth)
+        public AuthController(AuthService authService, IRefreshTokenStore refreshStore, AppDbContext context, IJwtService jwtService)
         {
-            _db = db;
-            _auth = auth;
+            _authService = authService;
+            _refreshStore = refreshStore;
+            _context = context;
+            _jwtService = jwtService;
         }
 
-        [HttpPost("login")]
-        public async Task<ActionResult<AuthResponse>> Login(LoginRequest request)
+        //set cookie
+        private void SetCookie(string name, string value, int minutes)
         {
-            var user = await _db.Users
-                .Include(u => u.RefreshTokens)
-                .FirstOrDefaultAsync(u => u.Username == request.Username);
-
-            if (user != null && BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash))
-            {
-                var accessToken = _auth.GenerateAccessToken(user);
-                var refreshToken = _auth.GenerateRefreshToken(user);
-
-                _db.RefreshTokens.Add(refreshToken);
-                await _db.SaveChangesAsync();
-
-                Response.Cookies.Append("refresh_token", refreshToken.Token, new CookieOptions
-                {
-                    HttpOnly = true,
-                    Secure = true,
-                    SameSite = SameSiteMode.Strict,
-                    Expires = refreshToken.ExpiresAt
-                });
-
-                return Ok(new AuthResponse(accessToken));
-            }
-
-            return Unauthorized();
-        }
-
-        [HttpPost("refresh")]
-        public async Task<ActionResult<AuthResponse>> Refresh()
-        {
-            if (!Request.Cookies.TryGetValue("refresh_token", out var token))
-                return Unauthorized();
-
-            var refresh = await _db.RefreshTokens
-                .Include(r => r.User)
-                .FirstOrDefaultAsync(r =>
-                    r.Token == token &&
-                    !r.Revoked &&
-                    r.ExpiresAt > DateTime.UtcNow);
-
-            if (refresh == null)
-                return Unauthorized();
-
-            refresh.Revoked = true;
-
-            var newRefresh = _auth.GenerateRefreshToken(refresh.User);
-            var newAccess = _auth.GenerateAccessToken(refresh.User);
-
-            _db.RefreshTokens.Add(newRefresh);
-            await _db.SaveChangesAsync();
-
-            Response.Cookies.Append("refresh_token", newRefresh.Token, new CookieOptions
+            Response.Cookies.Append(name, value, new CookieOptions
             {
                 HttpOnly = true,
                 Secure = true,
                 SameSite = SameSiteMode.Strict,
-                Expires = newRefresh.ExpiresAt
+                Expires = DateTime.UtcNow.AddMinutes(minutes)
+            });
+        }
+
+        [HttpPost("login")]
+        public async Task<IActionResult> Login()
+        {
+            // Demo account
+            var account = new Account
+            {
+                Id = Guid.NewGuid(),
+                Username = "dev01",
+                Role = RoleCode.dev
+            };
+
+            var (access, refresh) =
+                await _authService.GenerateTokenPairAsync(account);
+
+            SetCookie("access_token", access, 30);
+            SetCookie("refresh_token", refresh, 14 * 24 * 60);
+
+            return Ok();
+        }
+
+        [HttpPost("refresh")]
+        public async Task<IActionResult> Refresh()
+        {
+            var refreshToken = Request.Cookies["refresh_token"];
+            if (refreshToken == null) return Unauthorized();
+
+            var hash = TokenHelper.Hash(refreshToken);
+            var stored = await _refreshStore.FindAsync(hash);
+
+            if (stored == null || stored.IsExpired || stored.IsRevoked)
+                return Unauthorized();
+
+            await _refreshStore.RevokeAsync(stored);
+
+            var account = await _context.Accounts.FindAsync(stored.AccountId);
+            if (account == null) return Unauthorized();
+
+            var accessToken = _jwtService.GenerateAccessToken(account);
+
+            var newRefresh = TokenHelper.GenerateRefreshToken();
+            await _refreshStore.SaveAsync(new RefreshToken
+            {
+                Id = Guid.NewGuid(),
+                AccountId = account.Id,
+                TokenHash = TokenHelper.Hash(newRefresh),
+                ExpiresAt = DateTime.UtcNow.AddDays(14)
             });
 
-            return Ok(new AuthResponse(newAccess));
+            SetCookie("access_token", accessToken, 30);
+            SetCookie("refresh_token", newRefresh, 14 * 24 * 60);
+
+            return Ok();
         }
+
 
         [Authorize]
         [HttpPost("logout")]
         public async Task<IActionResult> Logout()
         {
-            if (Request.Cookies.TryGetValue("refresh_token", out var token))
+            var refreshToken = Request.Cookies["refresh_token"];
+            if (refreshToken != null)
             {
-                var rt = await _db.RefreshTokens.FirstOrDefaultAsync(x => x.Token == token);
-                if (rt != null)
-                {
-                    rt.Revoked = true;
-                    await _db.SaveChangesAsync();
-                }
+                var hash = TokenHelper.Hash(refreshToken);
+                var stored = await _refreshStore.FindAsync(hash);
+                if (stored != null)
+                    await _refreshStore.RevokeAsync(stored);
             }
 
+            Response.Cookies.Delete("access_token");
             Response.Cookies.Delete("refresh_token");
+
             return Ok();
         }
+
     }
+
 }

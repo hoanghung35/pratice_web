@@ -4,22 +4,15 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Content_App.Controllers
 {
-    [Authorize]
+    [Authorize(Policy = "AdminOnly")]
     [ApiController]
     [Route("api/items")]
-    public class ProductController:ControllerBase
+    public class ItemController : ControllerBase
     {
-        private readonly ItemService _service;
-
-        public ProductController(ItemService service)
+        [HttpPost]
+        public IActionResult CreateItem()
         {
-            _service = service;
-        }
-
-        [HttpGet("area/{areaId}")]
-        public async Task<IActionResult> GetByArea(Guid areaId)
-        {
-            return Ok(await _service.GetByAreaAsync(areaId));
+            return Ok("Allow dev, manage, admin");
         }
     }
 }

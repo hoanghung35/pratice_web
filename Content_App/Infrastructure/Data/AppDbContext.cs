@@ -8,18 +8,9 @@ namespace Content_App.Infrastructure.Data
        : base(options) { }
 
         public DbSet<User> Users => Set<User>();
+        public DbSet<Account> Accounts => Set<Account>();
         public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
 
-        protected override void OnModelCreating(ModelBuilder builder)
-        {
-            builder.Entity<User>()
-                .HasIndex(u => u.Username)
-                .IsUnique();
-
-            builder.Entity<User>()
-                .HasMany(u => u.RefreshTokens)
-                .WithOne(rt => rt.User)
-                .HasForeignKey(rt => rt.UserId);
-        }
+        
     }
 }
