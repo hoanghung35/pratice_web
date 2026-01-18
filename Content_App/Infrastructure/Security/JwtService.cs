@@ -18,27 +18,39 @@ namespace Content_App.Infrastructure.Security
             _config = config;
         }
 
-        public string GenerateAccessToken(Account account)
+        public string GenerateToken(Account account)
         {
-            var claims = new[]
-            {
-            new Claim(JwtClaimConstants.UserId, account.Id.ToString()),
-            new Claim(JwtClaimConstants.Role, account.Role.ToString())
-        };
+            var claims = BuildClaims(account);
 
             var key = new SymmetricSecurityKey(
-                Encoding.UTF8.GetBytes(_config["Jwt:Key"]!)
+                Encoding.UTF8.GetBytes(_config["Jwt:Secret"]!)
             );
+
+            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
             var token = new JwtSecurityToken(
                 issuer: _config["Jwt:Issuer"],
                 audience: _config["Jwt:Audience"],
                 claims: claims,
                 expires: DateTime.UtcNow.AddMinutes(30),
-                signingCredentials: new SigningCredentials(key, SecurityAlgorithms.HmacSha256)
+                signingCredentials: creds
             );
 
             return new JwtSecurityTokenHandler().WriteToken(token);
+        }
+
+        private static IEnumerable<Claim> BuildClaims(Account account)
+        {
+            return new List<Claim>
+        {
+            new(JwtClaimConstants.UserId, account.Id.ToString()),
+            new(JwtClaimConstants.UserCode, account.UserCode),
+            new(JwtClaimConstants.Role, account.Role.RoleNum),
+            new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+            new(JwtRegisteredClaimNames.Iat,
+                DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString(),
+                ClaimValueTypes.Integer64)
+        };
         }
     }
 }

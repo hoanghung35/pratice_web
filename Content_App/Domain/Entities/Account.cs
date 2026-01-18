@@ -5,8 +5,9 @@ namespace Content_App.Domain.Entities
     public class Account
     {
         public Guid Id { get; set; }
-        public string Username { get; set; } = null!;
-        public string PasswordHash { get; set; } = null!;
+        public string UserCode { get; set; } = null!;
+        public string Password { get; set; } = null!;
         public RoleCode Role { get; set; }
+        public string RoleNum {get; set;}
     }
 }

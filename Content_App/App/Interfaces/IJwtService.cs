@@ -4,7 +4,7 @@ namespace Content_App.App.Interfaces
 {
     public interface IJwtService
     {
-        string GenerateAccessToken(Account account);
+        string GenerateToken(Account account);
     }
 
 }

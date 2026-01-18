@@ -1,41 +1,38 @@
-﻿using Content_App.App.Interfaces;
+﻿using Content_App.App.DTOs.Auth;
+using Content_App.App.Interfaces;
 using Content_App.App.Interfaces.Authentication;
 using Content_App.Domain.Entities;
+using Content_App.Infrastructure.Data;
 using Content_App.Infrastructure.Security;
+using Microsoft.AspNetCore.Identity;
 
 
 namespace Content_App.App.Services
 {
     public class AuthService
     {
-        private readonly IJwtService _jwtService;
-        private readonly IRefreshTokenStore _refreshStore;
+        private readonly AppDbContext _context;
+        private readonly IJwtService _jwt;
+        private readonly PasswordHasher _hasher;
 
-        public AuthService(
-            IJwtService jwtService,
-            IRefreshTokenStore refreshStore)
+        public AuthService(AppDbContext context, IJwtService jwt, PasswordHasher hasher)
         {
-            _jwtService = jwtService;
-            _refreshStore = refreshStore;
+            _context = context;
+            _jwt = jwt;
+            _hasher = hasher;
         }
 
-        public async Task<(string accessToken, string refreshToken)>
-            GenerateTokenPairAsync(Account account)
+        public async Task<AuthResponse> LoginAsync(LoginRequest dto)
         {
-            var accessToken = _jwtService.GenerateAccessToken(account);
+            var account = await _context.Accounts
+                .Include(x => x.Role)
+                .FirstOrDefaultAsync(x => x.UserCode == dto.UserCode);
 
-            var refreshToken = TokenHelper.GenerateRefreshToken();
-            var hashed = TokenHelper.Hash(refreshToken);
+            if (account == null || !_hasher.Verify(dto.Password, account.Password))
+                throw new UnauthorizedAccessException();
 
-            await _refreshStore.SaveAsync(new RefreshToken
-            {
-                Id = Guid.NewGuid(),
-                AccountId = account.Id,
-                TokenHash = hashed,
-                ExpiresAt = DateTime.UtcNow.AddDays(14)
-            });
-
-            return (accessToken, refreshToken);
+            var token = _jwt.GenerateToken(account);
+            return new AuthResponse(token);
         }
     }
 }
