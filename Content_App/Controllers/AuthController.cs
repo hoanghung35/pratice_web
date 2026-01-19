@@ -16,26 +16,44 @@ namespace Content_App.Controllers
     [Route("api/auth")]
     public class AuthController : ControllerBase
     {
-        private readonly AuthService _auth;
+        private readonly AuthService _authService;
 
-        public AuthController(AuthService auth)
+        public AuthController(AuthService authService)
         {
-            _auth = auth;
+            _authService = authService;
         }
 
         [HttpPost("login")]
         public async Task<IActionResult> Login(LoginRequest dto)
         {
-            var result = await _auth.LoginAsync(dto);
-
-            Response.Cookies.Append("access_token", result.AccessToken, new CookieOptions
-            {
-                HttpOnly = true,
-                Secure = true,
-                SameSite = SameSiteMode.Strict
-            });
-
+            var result = await _authService.LoginAsync(dto);
+            WriteCookies(result);
             return Ok();
+        }
+
+        [HttpPost("refresh")]
+        public async Task<IActionResult> Refresh()
+        {
+            var refreshToken = Request.Cookies["refresh_token"];
+            if (refreshToken == null) return Unauthorized();
+
+            var result = await _authService.RefreshAsync(refreshToken);
+            WriteCookies(result);
+            return Ok();
+        }
+
+        private void WriteCookies(AuthResultDto result)
+        {
+            Response.Cookies.Append("access_token", result.AccessToken,
+                new CookieOptions { HttpOnly = true, Secure = true });
+
+            Response.Cookies.Append("refresh_token", result.RefreshToken,
+                new CookieOptions
+                {
+                    HttpOnly = true,
+                    Secure = true,
+                    Expires = DateTimeOffset.UtcNow.AddDays(7)
+                });
         }
     }
 }

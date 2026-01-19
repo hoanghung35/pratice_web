@@ -2,34 +2,36 @@
 using Content_App.Domain.Entities;
 using Content_App.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace Content_App.Infrastructure.Security
 {
-    public class RefreshTokenStore : IRefreshTokenStore
+    public class RefreshTokenStore
     {
-        private readonly AppDbContext _context;
+        private readonly IMemoryCache _cache;
 
-        public RefreshTokenStore(AppDbContext context)
+        public RefreshTokenStore(IMemoryCache cache)
         {
-            _context = context;
+            _cache = cache;
         }
 
-        public async Task SaveAsync(RefreshToken token)
+        public void Store(Guid userId, string refreshToken, TimeSpan ttl)
         {
-            _context.RefreshTokens.Add(token);
-            await _context.SaveChangesAsync();
+            _cache.Set(GetKey(refreshToken), userId, ttl);
         }
 
-        public async Task<RefreshToken?> FindAsync(string tokenHash)
+        public Guid? Validate(string refreshToken)
         {
-            return await _context.RefreshTokens
-                .FirstOrDefaultAsync(x => x.TokenHash == tokenHash);
+            return _cache.TryGetValue(GetKey(refreshToken), out Guid userId)
+                ? userId
+                : null;
         }
 
-        public async Task RevokeAsync(RefreshToken token)
+        public void Revoke(string refreshToken)
         {
-            token.RevokedAt = DateTime.UtcNow;
-            await _context.SaveChangesAsync();
+            _cache.Remove(GetKey(refreshToken));
         }
+
+        private static string GetKey(string token) => $"refresh_token:{token}";
     }
 }

@@ -8,6 +8,5 @@ namespace Content_App.Domain.Entities
         public string UserCode { get; set; } = null!;
         public string Password { get; set; } = null!;
         public RoleCode Role { get; set; }
-        public string RoleNum {get; set;}
     }
 }
