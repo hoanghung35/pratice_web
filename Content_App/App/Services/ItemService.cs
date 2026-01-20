@@ -1,4 +1,6 @@
-﻿using Content_App.Infrastructure.Data;
+﻿using Content_App.Domain.Entities;
+using Content_App.Infrastructure.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace Content_App.App.Services
 {
@@ -11,17 +13,19 @@ namespace Content_App.App.Services
             _db = db;
         }
 
-        public async Task<List<ItemDto>> GetByAreaAsync(Guid areaId)
+        public async Task<List<Item>> GetAllAsync()
         {
-            return await _db.Items
-                .Where(i => i.AreaId == areaId)
-                .Select(i => new ItemDto
-                {
-                    ItemCode = i.ItemCode,
-                    NameVi = i.NameVi,
-                    Quantity = i.Quantity
-                })
-                .ToListAsync();
+            return _db.Items.ToList();
+        }
+        public async Task<List<Item>> GetByAreaAsync(Guid areaId)
+        {
+            return await _db.Items.Where(i => i.Area_Id == areaId).ToListAsync();
+        }
+
+        public async Task CreateAsync(Item dto)
+        {
+            _db.Items.Add(dto);
+            await _db.SaveChangesAsync();
         }
     }
 }

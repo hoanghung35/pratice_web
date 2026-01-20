@@ -42,10 +42,25 @@ namespace Content_App.Controllers
             return Ok();
         }
 
+        [HttpPost("logout")]
+        public async Task<IActionResult> Logout()
+        {
+            var refreshToken = Request.Cookies["refresh_token"];
+
+            await _authService.LogoutAsync(refreshToken!);
+
+            // clear cookies
+            Response.Cookies.Delete("access_token");
+            Response.Cookies.Delete("refresh_token");
+
+            return Ok();
+        }
+
+
         private void WriteCookies(AuthResultDto result)
         {
             Response.Cookies.Append("access_token", result.AccessToken,
-                new CookieOptions { HttpOnly = true, Secure = true });
+                new CookieOptions { HttpOnly = true, Secure = true, SameSite = SameSiteMode.Strict });
 
             Response.Cookies.Append("refresh_token", result.RefreshToken,
                 new CookieOptions

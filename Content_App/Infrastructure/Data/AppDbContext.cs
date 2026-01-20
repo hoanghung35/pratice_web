@@ -11,6 +11,6 @@ namespace Content_App.Infrastructure.Data
         public DbSet<Account> Accounts => Set<Account>();
         public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
 
-        
+        public DbSet<Item> Items => Set<Item>();
     }
 }

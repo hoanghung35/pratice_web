@@ -1,17 +1,33 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Content_App.App.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Content_App.Controllers
 {
-    [Authorize(Policy = "DevOnly")]
+    [Authorize(Policy = "Admin, Dev")]
     [ApiController]
-    [Route("api/action")]
+    [Route("api/actions")]
     public class ActionController : ControllerBase
     {
-        [HttpDelete]
-        public IActionResult DangerousAction()
+        private readonly ActionService _service;
+
+        public ActionController(ActionService service)
         {
-            return Ok("Dev only");
+            _service = service;
+        }
+
+        [HttpPost("borrow")]
+        public async Task<IActionResult> Borrow(BorrowDto dto)
+        {
+            await _service.BorrowAsync(dto);
+            return Ok();
+        }
+
+        [HttpPost("return")]
+        public async Task<IActionResult> Return(ReturnDto dto)
+        {
+            await _service.ReturnAsync(dto);
+            return Ok();
         }
     }
 }

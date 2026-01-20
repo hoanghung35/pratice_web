@@ -55,6 +55,18 @@ namespace Content_App.App.Services
             return GenerateTokens(account);
         }
 
+        //logout
+        public async Task LogoutAsync(string refreshToken)
+        {
+            if (!string.IsNullOrEmpty(refreshToken))
+            {
+                _refreshTokenStore.Revoke(refreshToken);
+            }
+
+            await Task.CompletedTask;
+        }
+
+
         private AuthResultDto GenerateTokens(Account account)
         {
             var accessToken = _jwtService.GenerateToken(account);
