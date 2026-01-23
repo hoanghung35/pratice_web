@@ -25,6 +25,12 @@ export class AuthService {
       .pipe(tap(() => this.userSubject.next(null)));
   }
 
+  refreshToken() {
+    return this.http.post('/api/auth/refresh', {}, {
+      withCredentials: true
+    });
+  }
+
   get role(): string | null {
     return this.userSubject.value?.role ?? null;
   }
