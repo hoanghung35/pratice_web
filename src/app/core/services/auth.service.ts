@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { tap } from 'rxjs';
+import { Observable, of, tap } from 'rxjs';
 import { BehaviorSubject } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private userSubject = new BehaviorSubject<any>(null);
-  user$ = this.userSubject.asObservable();
+  private me$ = new BehaviorSubject<any | null>(null);
 
   constructor(private http: HttpClient) { }
 
@@ -21,8 +21,9 @@ export class AuthService {
   }
 
   logout() {
-    return this.http.post('/api/auth/logout', {}, { withCredentials: true })
-      .pipe(tap(() => this.userSubject.next(null)));
+    return this.http.post('/api/auth/logout', {}).pipe(
+      tap(() => this.clearMe())
+    );
   }
 
   refreshToken() {
@@ -35,7 +36,17 @@ export class AuthService {
     return this.userSubject.value?.role ?? null;
   }
 
-  isLoggedIn(): boolean {
-    return !!this.userSubject.value;
+  getMe(force = false): Observable<any> {
+    if (!force && this.me$.value) {
+      return of(this.me$.value);
+    }
+
+    return this.http.get<any>('/api/auth/me').pipe(
+      tap(user => this.me$.next(user))
+    );
+  }
+
+  clearMe() {
+    this.me$.next(null);
   }
 }
