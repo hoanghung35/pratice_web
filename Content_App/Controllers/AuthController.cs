@@ -60,13 +60,17 @@ namespace Content_App.Controllers
         private void WriteCookies(AuthResultDto result)
         {
             Response.Cookies.Append("access_token", result.AccessToken,
-                new CookieOptions { HttpOnly = true, Secure = true, SameSite = SameSiteMode.Strict });
+                new CookieOptions { 
+                    HttpOnly = true, 
+                    Secure = false, 
+                    SameSite = SameSiteMode.Lax 
+                });
 
             Response.Cookies.Append("refresh_token", result.RefreshToken,
                 new CookieOptions
                 {
                     HttpOnly = true,
-                    Secure = true,
+                    Secure = false,
                     Expires = DateTimeOffset.UtcNow.AddDays(7)
                 });
         }
