@@ -1,4 +1,5 @@
-﻿using Content_App.App.DTOs.Auth;
+﻿using System.Security.Claims;
+using Content_App.App.DTOs.Auth;
 using Content_App.App.Interfaces;
 using Content_App.App.Interfaces.Authentication;
 using Content_App.App.Services;
@@ -21,6 +22,18 @@ namespace Content_App.Controllers
         public AuthController(AuthService authService)
         {
             _authService = authService;
+        }
+
+        [Authorize]
+        [HttpGet("me")]
+        public IActionResult Me()
+        {
+            return Ok(new
+            {
+                id = User.FindFirst("sub")?.Value,
+                username = User.Identity?.Name,
+                role = User.FindFirst(ClaimTypes.Role)?.Value
+            });
         }
 
         [HttpPost("login")]
