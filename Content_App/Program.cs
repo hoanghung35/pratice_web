@@ -1,6 +1,7 @@
 using System.Text;
 using Content_App.App.Interfaces.Authentication;
 using Content_App.App.Services;
+using Content_App.Controllers;
 using Content_App.Domain.Enums;
 using Content_App.Infrastructure.Security;
 using Content_App.Shared.Constants;
@@ -81,6 +82,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseMiddleware<JwtFromCookieMiddleware>();
 app.UseAuthorization();
 
 app.MapControllers();
