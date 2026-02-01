@@ -5,35 +5,37 @@ import { BehaviorSubject } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  private userSubject = new BehaviorSubject<any>(null);
+
   private me$ = new BehaviorSubject<any | null>(null);
 
   constructor(private http: HttpClient) { }
 
   login(username: string, password: string) {
-    return this.http.post<any>(
+    return this.http.post(
       '/api/auth/login',
       { username, password },
       { withCredentials: true }
     ).pipe(
-      tap(user => this.userSubject.next(user))
+      tap(() => this.clearMe())
     );
   }
 
   logout() {
-    return this.http.post('/api/auth/logout', {}).pipe(
+    return this.http.post(
+      '/api/auth/logout',
+      {},
+      { withCredentials: true }
+    ).pipe(
       tap(() => this.clearMe())
     );
   }
 
   refreshToken() {
-    return this.http.post('/api/auth/refresh', {}, {
-      withCredentials: true
-    });
-  }
-
-  get role(): string | null {
-    return this.userSubject.value?.role ?? null;
+    return this.http.post(
+      '/api/auth/refresh',
+      {},
+      { withCredentials: true }
+    );
   }
 
   getMe(force = false): Observable<any> {
@@ -41,12 +43,23 @@ export class AuthService {
       return of(this.me$.value);
     }
 
-    return this.http.get<any>('/api/auth/me').pipe(
+    return this.http.get<any>(
+      '/api/auth/me',
+      { withCredentials: true }
+    ).pipe(
       tap(user => this.me$.next(user))
     );
   }
 
   clearMe() {
     this.me$.next(null);
+  }
+
+  get user$() {
+    return this.me$.asObservable();
+  }
+
+  get role(): string | null {
+    return this.me$.value?.role ?? null;
   }
 }

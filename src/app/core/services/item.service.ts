@@ -4,6 +4,11 @@ import { Injectable } from '@angular/core';
   providedIn: 'root'
 })
 export class ItemService {
+  http: any;
 
   constructor() { }
+
+  getItems() {
+    return this.http.get('/api/items');
+  }
 }

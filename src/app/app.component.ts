@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { AuthService } from './core/services/auth.service';
 
 @Component({
   selector: 'app-root',
@@ -8,4 +9,10 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'FE_Web';
+
+  constructor(private auth: AuthService) { }
+
+  ngOnInit() {
+    this.auth.getMe(true).subscribe();
+  }
 }

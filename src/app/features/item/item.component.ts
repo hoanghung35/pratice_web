@@ -9,9 +9,11 @@ import { ItemService } from '../../core/services/item.service';
 })
 export class ItemComponent {
   constructor(private itemService: ItemService) { }
+  items: any
+  res: any
 
   ngOnInit() {
-    this.itemService.getItems().subscribe(res => {
+    this.itemService.getItems().subscribe((res: any) => {
       this.items = res;
     });
   }

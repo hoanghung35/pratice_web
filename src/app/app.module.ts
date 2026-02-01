@@ -19,13 +19,13 @@ import { OrderComponent } from './features/order/order.component';
 import { ApproveComponent } from './features/approve/approve.component';
 import { MainLayoutComponent } from './layouts/main-layout/main-layout.component';
 import { HttpClientModule } from '@angular/common/http';
+import { ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
     AppComponent,
     NavbarComponent,
     HomepageComponent,
-    ItemComponent,
     LoginComponent,
     OrderComponent,
     ApproveComponent,
@@ -42,7 +42,8 @@ import { HttpClientModule } from '@angular/common/http';
     MatGridListModule,
     MatCardModule,
     MatMenuModule,
-    HttpClientModule
+    HttpClientModule,
+    ReactiveFormsModule
   ],
   providers: [
     provideClientHydration(withEventReplay())
