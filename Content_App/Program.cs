@@ -1,11 +1,12 @@
-using System.Text;
-using Content_App.App.Interfaces.Authentication;
+﻿using System.Text;
+using Content_App.App.Interfaces;
 using Content_App.App.Services;
 using Content_App.Controllers;
 using Content_App.Domain.Enums;
+using Content_App.Infrastructure.Data;
 using Content_App.Infrastructure.Security;
 using Content_App.Shared.Constants;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -14,8 +15,18 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 
-builder.Services.AddScoped<IRefreshTokenStore, RefreshTokenStore>();
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+
+// 2. Đăng ký DbContext sử dụng Npgsql
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseNpgsql(connectionString));
+
+
+//builder.Services.AddScoped<IRefreshTokenStore, RefreshTokenStore>();
+builder.Services.AddScoped<IJwtService, JwtService>();
+builder.Services.AddScoped<PasswordHasher>();
 builder.Services.AddScoped<AuthService>();
+
 
 builder.Services.AddAuthentication("Bearer")
 .AddJwtBearer("Bearer", options =>

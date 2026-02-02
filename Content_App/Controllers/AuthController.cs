@@ -1,12 +1,6 @@
 ﻿using System.Security.Claims;
 using Content_App.App.DTOs.Auth;
-using Content_App.App.Interfaces;
-using Content_App.App.Interfaces.Authentication;
 using Content_App.App.Services;
-using Content_App.Domain.Entities;
-using Content_App.Domain.Enums;
-using Content_App.Infrastructure.Data;
-using Content_App.Infrastructure.Security;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -63,8 +57,19 @@ namespace Content_App.Controllers
             await _authService.LogoutAsync(refreshToken!);
 
             // clear cookies
-            Response.Cookies.Delete("access_token");
-            Response.Cookies.Delete("refresh_token");
+            Response.Cookies.Delete("access_token", new CookieOptions
+            {
+                Path = "/",
+                Secure = false,
+                SameSite = SameSiteMode.Lax
+            });
+
+            Response.Cookies.Delete("refresh_token", new CookieOptions
+            {
+                Path = "/",
+                Secure = false,
+                SameSite = SameSiteMode.Lax
+            });
 
             return Ok();
         }
@@ -75,7 +80,8 @@ namespace Content_App.Controllers
             Response.Cookies.Append("access_token", result.AccessToken,
                 new CookieOptions { 
                     HttpOnly = true, 
-                    Secure = false, 
+                    Secure = false,
+                    Path = "/",
                     SameSite = SameSiteMode.Lax 
                 });
 
@@ -84,6 +90,7 @@ namespace Content_App.Controllers
                 {
                     HttpOnly = true,
                     Secure = false,
+                    Path = "/",
                     Expires = DateTimeOffset.UtcNow.AddDays(7)
                 });
         }

@@ -19,7 +19,7 @@ namespace Content_App.App.Services
         }
         public async Task<List<Item>> GetByAreaAsync(Guid areaId)
         {
-            return await _db.Items.Where(i => i.Area_Id == areaId).ToListAsync();
+            return await _db.Items.Where(i => i.AreaId == areaId).ToListAsync();
         }
 
         public async Task CreateAsync(Item dto)

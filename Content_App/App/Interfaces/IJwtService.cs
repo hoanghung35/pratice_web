@@ -6,5 +6,4 @@ namespace Content_App.App.Interfaces
     {
         string GenerateToken(Account account);
     }
-
 }

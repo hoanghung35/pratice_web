@@ -1,4 +1,5 @@
-﻿using Content_App.Domain.Entities;
+﻿
+using Content_App.Domain.Entities;
 
 namespace Content_App.App.Interfaces.Authentication
 {
