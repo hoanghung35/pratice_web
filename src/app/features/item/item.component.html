@@ -1,1 +1,7 @@
-<p>item works!</p>
+<ng-template #action let-item>
+    <button (click)="edit(item.id)">Edit</button>
+    <button (click)="delete(item.id)">Delete</button>
+</ng-template>
+
+<app-table [columns]="columns" [data]="items" [actionTemplate]="action">
+</app-table>

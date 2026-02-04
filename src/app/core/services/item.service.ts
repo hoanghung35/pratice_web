@@ -1,14 +1,16 @@
 import { Injectable } from '@angular/core';
+import { Item } from '../../shared/models/item.model';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ItemService {
-  http: any;
 
-  constructor() { }
+
+  constructor(private http: HttpClient) { }
 
   getItems() {
-    return this.http.get('/api/items');
+    return this.http.get<Item[]>('/api/items');
   }
 }

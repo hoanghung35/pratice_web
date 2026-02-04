@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { TableComponent } from './table/table.component';
 
 // import { TableComponent } from './components/table/table.component';
 // import { LoadingComponent } from './components/loading/loading.component';
@@ -9,17 +10,18 @@ import { CommonModule } from '@angular/common';
 
 @NgModule({
     declarations: [
-        // TableComponent,
         // LoadingComponent,
         // RolePipe,
         // DatePipe
+
+        TableComponent
     ],
     imports: [
         CommonModule
     ],
     exports: [
         CommonModule,
-        // TableComponent,
+        TableComponent,
         // LoadingComponent,
         // RolePipe,
         // DatePipe
