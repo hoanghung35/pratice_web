@@ -7,12 +7,13 @@ import { BehaviorSubject } from 'rxjs';
 export class AuthService {
 
   private me$ = new BehaviorSubject<any | null>(null);
+  private _url = "";
 
   constructor(private http: HttpClient) { }
 
   login(username: string, password: string) {
     return this.http.post(
-      '/api/auth/login',
+      `${this._url}/login`,
       { username, password },
       { withCredentials: true }
     ).pipe(
@@ -22,7 +23,7 @@ export class AuthService {
 
   logout() {
     return this.http.post(
-      '/api/auth/logout',
+      `${this._url}/logout`,
       {},
       { withCredentials: true }
     ).pipe(
@@ -32,7 +33,7 @@ export class AuthService {
 
   refreshToken() {
     return this.http.post(
-      '/api/auth/refresh',
+      `${this._url}/refresh`,
       {},
       { withCredentials: true }
     );
@@ -44,7 +45,7 @@ export class AuthService {
     }
 
     return this.http.get<any>(
-      '/api/auth/me',
+      `${this._url}/me`,
       { withCredentials: true }
     ).pipe(
       tap(user => this.me$.next(user))

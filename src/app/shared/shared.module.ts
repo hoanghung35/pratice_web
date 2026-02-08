@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TableComponent } from './table/table.component';
 
-// import { TableComponent } from './components/table/table.component';
 // import { LoadingComponent } from './components/loading/loading.component';
 
 // import { RolePipe } from './pipes/role.pipe';
@@ -13,11 +12,10 @@ import { TableComponent } from './table/table.component';
         // LoadingComponent,
         // RolePipe,
         // DatePipe
-
-        TableComponent
     ],
     imports: [
-        CommonModule
+        CommonModule,
+        TableComponent
     ],
     exports: [
         CommonModule,

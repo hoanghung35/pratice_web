@@ -10,7 +10,7 @@ import { Order } from '../../shared/models/order.model';
 })
 export class OrderComponent {
   columns: TableColumn<Order>[] = [
-    { key: 'orderNo', label: 'Order No' },
+    { key: 'id', label: 'Order No' },
     {
       key: 'createdAt',
       label: 'Date',

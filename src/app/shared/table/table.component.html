@@ -1,15 +1,29 @@
 <table>
     <thead>
         <tr>
-            <th *ngFor="let col of columns">{{ col.label }}</th>
+            @for (col of columns; track col.label) {
+            <th>{{ col.label }}</th>
+            }
         </tr>
     </thead>
 
     <tbody>
-        <tr *ngFor="let row of data">
-            <td *ngFor="let col of columns">
-                {{ col.render ? col.render(row) : row[col.key] }}
+        @for (row of data; track row || $index) {
+        <tr>
+            @for (col of columns; track col.key) {
+            <td>
+                @if (col.render) {
+                {{ col.render(row) }}
+                } @else {
+                {{ row[col.key] }}
+                }
             </td>
+            }
         </tr>
+        } @empty {
+        <tr>
+            <td [attr.colspan]="columns.length">No data available.</td>
+        </tr>
+        }
     </tbody>
 </table>

@@ -3,13 +3,15 @@ import { ItemService } from '../../core/services/item.service';
 import { Item } from '../../shared/models/item.model';
 import { TableColumn } from '../../shared/models/table-column.model';
 import { DatePipe } from '@angular/common';
+import { SharedModule } from '../../shared/shared.module';
 
 @Component({
-  selector: 'app-item-list',
-  templateUrl: './item-list.component.html',
-  providers: [DatePipe]
+  selector: 'app-item',
+  templateUrl: './item.component.html',
+  providers: [DatePipe],
+  imports: [SharedModule]
 })
-export class ItemListComponent implements OnInit {
+export class ItemComponent implements OnInit {
   items: Item[] = [];
 
 
@@ -40,5 +42,13 @@ export class ItemListComponent implements OnInit {
     this.itemService.getItems().subscribe((res: Item[]) => {
       this.items = res;
     });
+  }
+
+  edit(id: string) {
+
+  }
+
+  delete(id: string) {
+
   }
 }
