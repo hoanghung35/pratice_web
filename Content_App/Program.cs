@@ -28,7 +28,11 @@ builder.Services.AddScoped<PasswordHasher>();
 builder.Services.AddScoped<AuthService>();
 
 
-builder.Services.AddAuthentication("Bearer")
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = "Bearer";
+    options.DefaultChallengeScheme = "Bearer";
+})
 .AddJwtBearer("Bearer", options =>
 {
     options.TokenValidationParameters = new TokenValidationParameters
@@ -77,6 +81,8 @@ builder.Services.AddAuthorization(options =>
             Enum.Parse<RoleCode>(
                 ctx.User.FindFirst(JwtClaimConstants.Role)!.Value
             ) == RoleCode.dev));
+
+
 });
 
 
@@ -94,6 +100,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseMiddleware<JwtFromCookieMiddleware>();
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
