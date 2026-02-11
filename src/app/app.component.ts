@@ -13,6 +13,6 @@ export class AppComponent {
   constructor(private auth: AuthService) { }
 
   ngOnInit() {
-    this.auth.getMe(true).subscribe();
+    //this.auth.getMe(true).subscribe();
   }
 }

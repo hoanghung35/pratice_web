@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { AuthService } from '../../../core/services/auth.service';
 import { Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-login',
@@ -13,6 +14,9 @@ export class LoginComponent {
   username: string = "";
   password: string = ""
   loginForm: FormGroup;
+  user: Observable<string | null>
+    //private readonly auth:AuthService
+    | undefined
 
   //private readonly auth:AuthService
   constructor(private auth: AuthService, private router: Router, private fb: FormBuilder) {
@@ -31,7 +35,10 @@ export class LoginComponent {
   login() {
     this.auth.login(this.username, this.password)
       .subscribe({
-        next: () => this.router.navigate(['/items']),
+        next: () => this.auth.getMe().subscribe(user => {
+          this.user = user;
+          this.router.navigate(['/items'])
+        }),
         error: () => console.log('Login failed')
       });
   }
