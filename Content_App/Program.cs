@@ -6,6 +6,7 @@ using Content_App.Domain.Enums;
 using Content_App.Infrastructure.Data;
 using Content_App.Infrastructure.Security;
 using Content_App.Shared.Constants;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 
@@ -13,28 +14,35 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddControllers();
+builder.Services.AddControllers().AddJsonOptions(options =>
+{
+    options.JsonSerializerOptions.PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.CamelCase;
+});
 
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+builder.Services.AddMemoryCache();
 
-// 2. Đăng ký DbContext sử dụng Npgsql
-builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseNpgsql(connectionString));
+IConfigurationRoot configuration = new ConfigurationBuilder()
+    .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
+    .AddJsonFile("appsettings.json").Build();
 
+var connection = configuration.GetConnectionString("Connections");
 
-//builder.Services.AddScoped<IRefreshTokenStore, RefreshTokenStore>();
-builder.Services.AddScoped<IJwtService, JwtService>();
-builder.Services.AddScoped<PasswordHasher>();
+//Add Scoped
 builder.Services.AddScoped<AuthService>();
+builder.Services.AddScoped<PasswordHasher>();
+builder.Services.AddScoped<RefreshTokenStore>();
+builder.Services.AddScoped<IJwtService, JwtService>();
+builder.Services.AddScoped<ItemService>();
+builder.Services.AddScoped<ApproveService>();
+builder.Services.AddScoped<OrderService>();
+builder.Services.AddScoped<ActionService>();
 
+//DbContext
+builder.Services.AddDbContext<AppDbContext>(options => options.UseNpgsql(connection));
+builder.Services.AddHttpClient();
 
-builder.Services.AddAuthentication(options =>
-{
-    options.DefaultAuthenticateScheme = "Bearer";
-    options.DefaultChallengeScheme = "Bearer";
-})
-.AddJwtBearer("Bearer", options =>
-{
+//Jwt congig
+builder.Services.AddAuthentication().AddJwtBearer(options => {
     options.TokenValidationParameters = new TokenValidationParameters
     {
         ValidateIssuer = true,
@@ -42,21 +50,29 @@ builder.Services.AddAuthentication(options =>
         ValidateLifetime = true,
         ValidateIssuerSigningKey = true,
 
-        ValidIssuer = builder.Configuration["Jwt:Issuer"],
-        ValidAudience = builder.Configuration["Jwt:Audience"],
-        IssuerSigningKey = new SymmetricSecurityKey(
-            Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Secret"]!)
-        ),
-
+        ValidIssuer = builder.Configuration["Jwt:Issuer"]!.ToString(),
+        ValidAudience = builder.Configuration["Jwt:Audience"]!.ToString(),
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:key"]!.ToString())),
         RoleClaimType = JwtClaimConstants.Role,
-        NameClaimType = JwtClaimConstants.UserCode
+        NameClaimType = JwtClaimConstants.UserCode,
+        ClockSkew = TimeSpan.Zero
     };
 
-    options.Events = new()
-    {
-        OnMessageReceived = ctx =>
+    options.Events = new JwtBearerEvents { 
+        OnMessageReceived = context =>
         {
-            ctx.Token = ctx.Request.Cookies["access_token"];
+            //If header already provided, keep it
+            var authHeader = context.Request.Headers.Authorization.ToString();
+            if(!string.IsNullOrEmpty(authHeader))
+            {
+                return Task.CompletedTask;
+            }
+
+            if(context.Request.Cookies.TryGetValue("access_token", out var token))
+            {
+                context.Token = token;
+            }
+
             return Task.CompletedTask;
         }
     };
@@ -64,42 +80,63 @@ builder.Services.AddAuthentication(options =>
 
 builder.Services.AddAuthorization(options =>
 {
-    options.AddPolicy("AdminOnly", policy =>
+    options.AddPolicy("admin", policy =>
+    {
         policy.RequireAssertion(ctx =>
-            Enum.Parse<RoleCode>(
-                ctx.User.FindFirst(JwtClaimConstants.Role)!.Value
-            ) >= RoleCode.admin));
+        {
+            var roleValue = ctx.User.FindFirst(JwtClaimConstants.Role)?.Value;
+            return roleValue != null && Enum.TryParse<RoleKey>(roleValue, out var role) && role == RoleKey.admin;
+        });
+    });
 
-    options.AddPolicy("ManagerUp", policy =>
+    options.AddPolicy("dev", policy =>
+    {
         policy.RequireAssertion(ctx =>
-            Enum.Parse<RoleCode>(
-                ctx.User.FindFirst(JwtClaimConstants.Role)!.Value
-            ) >= RoleCode.manager));
+        {
+            var roleValue = ctx.User.FindFirst(JwtClaimConstants.Role)?.Value;
+            return roleValue != null && Enum.TryParse<RoleKey>(roleValue, out var role) && role == RoleKey.dev;
+        });
+    });
 
-    options.AddPolicy("DevOnly", policy =>
+    options.AddPolicy("manager", policy =>
+    {
         policy.RequireAssertion(ctx =>
-            Enum.Parse<RoleCode>(
-                ctx.User.FindFirst(JwtClaimConstants.Role)!.Value
-            ) == RoleCode.dev));
-
-
+        {
+            var roleValue = ctx.User.FindFirst(JwtClaimConstants.Role)?.Value;
+            return roleValue != null && Enum.TryParse<RoleKey>(roleValue, out var role) && role == RoleKey.manager;
+        });
+    });
 });
 
+//Congig CORS
 
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowCors", policy =>
+    {
+        policy.WithOrigins("http://localhost:4200")
+        .AllowAnyHeader()
+        .AllowAnyMethod()
+        .AllowCredentials();
+    });
+});
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+//Config the HTTP request pipeline
+if(app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+app.UseRouting();
+app.UseCors("AllowCors");
 
 app.UseMiddleware<JwtFromCookieMiddleware>();
+
 app.UseAuthentication();
 app.UseAuthorization();
 
