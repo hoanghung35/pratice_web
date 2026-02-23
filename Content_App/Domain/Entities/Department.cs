@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace Content_App.Domain.Entities;
+﻿namespace Content_App.Domain.Entities;
 
 public partial class Department
 {

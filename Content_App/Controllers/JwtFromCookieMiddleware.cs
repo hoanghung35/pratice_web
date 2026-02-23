@@ -6,13 +6,13 @@
 
         public JwtFromCookieMiddleware(RequestDelegate next)
         {
-            _next = next;
+            this._next = next;
         }
 
         public async Task Invoke(HttpContext context)
         {
             var token = context.Request.Cookies["access_token"];
-            if (!string.IsNullOrEmpty(token))
+            if(!string.IsNullOrEmpty(token))
             {
                 context.Request.Headers.Authorization = $"Bearer {token}";
             }

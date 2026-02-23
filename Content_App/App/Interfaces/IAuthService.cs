@@ -2,8 +2,8 @@
 
 namespace Content_App.App.Interfaces
 {
-    public interface IJwtService
+    public interface IAuthService
     {
-        string GenerateToken(Account account);
+        string GenerateAccessToken(Account account);
     }
 }

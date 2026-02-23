@@ -6,13 +6,13 @@ namespace Content_App.App.Policies
 {
     public class RolePolicy
     {
-        static bool HasRole(AuthorizationHandlerContext ctx, RoleKey required)
+        public bool HasRole(AuthorizationHandlerContext atx, RoleKey rk)
         {
-            var roleClaim = ctx.User.FindFirst(JwtClaimConstants.Role)?.Value;
+            var roleClaim = atx.User.FindFirst(JwtClaimConstant.Role)?.Value;
             if (roleClaim == null) return false;
 
             var userRole = Enum.Parse<RoleKey>(roleClaim);
-            return userRole >= required;
+            return userRole >= rk;
         }
     }
 }

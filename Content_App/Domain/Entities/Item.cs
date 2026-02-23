@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace Content_App.Domain.Entities;
-
+﻿namespace Content_App.Domain.Entities;
 public partial class Item
 {
     public Guid Id { get; set; }
@@ -31,13 +27,15 @@ public partial class Item
 
     public string? Image { get; set; }
 
-    public virtual ICollection<Action> Actions { get; set; } = new List<Action>();
+    public string? PositionIn { get; set; }
 
     public virtual ICollection<Approve> Approves { get; set; } = new List<Approve>();
 
     public virtual Area Area { get; set; } = null!;
 
     public virtual Department Dept { get; set; } = null!;
+
+    public virtual ICollection<LogAction> LogActions { get; set; } = new List<LogAction>();
 
     public virtual ICollection<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
 }

@@ -1,22 +1,34 @@
-﻿using Content_App.App.DTOs;
+﻿using Content_App.Infrastructure.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace Content_App.App.Services
 {
     public class ApproveService
     {
-        public async Task<ReturnDto> GetPendingAsync()
+        private readonly LogDbContext _context;
+
+        public ApproveService(LogDbContext context)
         {
-            return new ReturnDto { id = "" };
+            this._context = context;
         }
 
-        public async Task ApproveAsync(Guid id)
+        public async Task ApproveOrder(Guid approveId, Guid adminId, bool flag)
         {
+            var approve = await _context.Approves.Include(p => p.Order).FirstAsync(p => p.Id == approveId);
+            if(flag)
+            {
+                approve.Status = "approval";
+                var item = await _context.Items.FindAsync(approve.ItemId);
 
-        }
-
-        public async Task RejectAsync (Guid id, string s)
-        {
-
+                if(item != null)
+                {
+                    item.Quantity += approve.Qty;
+                }
+            }
+            else
+            {
+                approve.Status = "rejected";
+            }
         }
     }
 }

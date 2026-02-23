@@ -2,9 +2,9 @@
 
 namespace Content_App.Controllers
 {
-    [Route("api/order")]
+    [Route("api/approve")]
     [ApiController]
-    public class OrderController : Controller
+    public class AproveController : Controller
     {
         
     }

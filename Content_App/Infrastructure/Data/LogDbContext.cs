@@ -1,29 +1,26 @@
-﻿using System;
-using System.Collections.Generic;
-using Content_App.Domain.Entities;
+﻿using Content_App.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace Content_App.Infrastructure.Data
-{
+namespace Content_App.Infrastructure.Data;
 
-public partial class AppDbContext : DbContext
+public partial class LogDbContext : DbContext
 {
-    public AppDbContext()
+    public LogDbContext()
     {
     }
 
-    public AppDbContext(DbContextOptions<AppDbContext> options)
+    public LogDbContext(DbContextOptions<LogDbContext> options)
         : base(options)
     {
     }
 
     public virtual DbSet<Account> Accounts { get; set; }
 
-    public virtual DbSet<Domain.Entities.Action> Actions { get; set; }
-
     public virtual DbSet<Approve> Approves { get; set; }
 
     public virtual DbSet<Area> Areas { get; set; }
+
+    public virtual DbSet<Currency> Currencies { get; set; }
 
     public virtual DbSet<Department> Departments { get; set; }
 
@@ -31,13 +28,15 @@ public partial class AppDbContext : DbContext
 
     public virtual DbSet<Item> Items { get; set; }
 
+    public virtual DbSet<LogAction> LogActions { get; set; }
+
     public virtual DbSet<OrderItem> OrderItems { get; set; }
 
     public virtual DbSet<Role> Roles { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseNpgsql("Server=localhost;Port=5432;Database=LOG_CONTROL;User Id=postgres;Password=tslog;CommandTimeout=2000;");
+        => optionsBuilder.UseNpgsql("Host=localhost;Database=LOG_CONTROL;Username=postgres;Password=tslog");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -66,44 +65,6 @@ public partial class AppDbContext : DbContext
                 .HasConstraintName("fk_account_role");
         });
 
-        modelBuilder.Entity<Domain.Entities.Action>(entity =>
-        {
-            entity.HasKey(e => e.Id).HasName("action_pkey");
-
-            entity.ToTable("action");
-
-            entity.Property(e => e.Id)
-                .HasDefaultValueSql("gen_random_uuid()")
-                .HasColumnName("id");
-            entity.Property(e => e.DateAction)
-                .HasDefaultValueSql("now()")
-                .HasColumnType("timestamp without time zone")
-                .HasColumnName("date_action");
-            entity.Property(e => e.EmpId).HasColumnName("emp_id");
-            entity.Property(e => e.ItemId).HasColumnName("item_id");
-            entity.Property(e => e.PicId).HasColumnName("pic_id");
-            entity.Property(e => e.Qty).HasColumnName("qty");
-            entity.Property(e => e.Reason).HasColumnName("reason");
-            entity.Property(e => e.Status)
-                .HasColumnType("character varying")
-                .HasColumnName("status");
-
-            entity.HasOne(d => d.Emp).WithMany(p => p.Actions)
-                .HasForeignKey(d => d.EmpId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("fk_action_emp");
-
-            entity.HasOne(d => d.Item).WithMany(p => p.Actions)
-                .HasForeignKey(d => d.ItemId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("fk_action_item");
-
-            entity.HasOne(d => d.Pic).WithMany(p => p.Actions)
-                .HasForeignKey(d => d.PicId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("fk_action_pic");
-        });
-
         modelBuilder.Entity<Approve>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("approve_pkey");
@@ -113,16 +74,19 @@ public partial class AppDbContext : DbContext
             entity.Property(e => e.Id)
                 .HasDefaultValueSql("gen_random_uuid()")
                 .HasColumnName("id");
+            entity.Property(e => e.DateApprove)
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("date_approve");
+            entity.Property(e => e.DateRequest)
+                .HasDefaultValueSql("now()")
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("date_request");
             entity.Property(e => e.ItemId).HasColumnName("item_id");
             entity.Property(e => e.Kind)
                 .HasColumnType("character varying")
                 .HasColumnName("kind");
+            entity.Property(e => e.OrderId).HasColumnName("order_id");
             entity.Property(e => e.Qty).HasColumnName("qty");
-            entity.Property(e => e.Reason).HasColumnName("reason");
-            entity.Property(e => e.RequestTime)
-                .HasDefaultValueSql("now()")
-                .HasColumnType("timestamp without time zone")
-                .HasColumnName("request_time");
             entity.Property(e => e.RequestorId).HasColumnName("requestor_id");
             entity.Property(e => e.Status)
                 .HasDefaultValueSql("'pending'::character varying")
@@ -133,6 +97,11 @@ public partial class AppDbContext : DbContext
                 .HasForeignKey(d => d.ItemId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("fk_approve_item");
+
+            entity.HasOne(d => d.Order).WithMany(p => p.Approves)
+                .HasForeignKey(d => d.OrderId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("fk_approve_order");
 
             entity.HasOne(d => d.Requestor).WithMany(p => p.Approves)
                 .HasForeignKey(d => d.RequestorId)
@@ -157,6 +126,23 @@ public partial class AppDbContext : DbContext
             entity.Property(e => e.AreaName)
                 .HasColumnType("character varying")
                 .HasColumnName("area_name");
+        });
+
+        modelBuilder.Entity<Currency>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("currency_pkey");
+
+            entity.ToTable("currency");
+
+            entity.Property(e => e.Id)
+                .HasDefaultValueSql("gen_random_uuid()")
+                .HasColumnName("id");
+            entity.Property(e => e.CurrenName)
+                .HasColumnType("character varying")
+                .HasColumnName("curren_name");
+            entity.Property(e => e.ExchangeRate)
+                .HasPrecision(15, 3)
+                .HasColumnName("exchange_rate");
         });
 
         modelBuilder.Entity<Department>(entity =>
@@ -197,7 +183,7 @@ public partial class AppDbContext : DbContext
             entity.Property(e => e.EmpCode)
                 .HasColumnType("character varying")
                 .HasColumnName("emp_code");
-            entity.Property(e => e.Fullname)
+            entity.Property(e => e.FullName)
                 .HasColumnType("character varying")
                 .HasColumnName("fullname");
             entity.Property(e => e.Grade)
@@ -242,6 +228,9 @@ public partial class AppDbContext : DbContext
             entity.Property(e => e.Maker)
                 .HasColumnType("character varying")
                 .HasColumnName("maker");
+            entity.Property(e => e.PositionIn)
+                .HasColumnType("character varying")
+                .HasColumnName("position_in");
             entity.Property(e => e.Quantity)
                 .HasDefaultValue(0)
                 .HasColumnName("quantity");
@@ -266,6 +255,41 @@ public partial class AppDbContext : DbContext
                 .HasConstraintName("fk_item_dep");
         });
 
+        modelBuilder.Entity<LogAction>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("action_pkey");
+
+            entity.ToTable("log_action");
+
+            entity.Property(e => e.Id)
+                .HasDefaultValueSql("gen_random_uuid()")
+                .HasColumnName("id");
+            entity.Property(e => e.DateAction)
+                .HasDefaultValueSql("now()")
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("date_action");
+            entity.Property(e => e.EmpCode)
+                .HasMaxLength(10)
+                .HasColumnName("emp_code");
+            entity.Property(e => e.ItemId).HasColumnName("item_id");
+            entity.Property(e => e.Kind)
+                .HasColumnType("character varying")
+                .HasColumnName("kind");
+            entity.Property(e => e.PicId).HasColumnName("pic_id");
+            entity.Property(e => e.Qty).HasColumnName("qty");
+            entity.Property(e => e.Reason).HasColumnName("reason");
+
+            entity.HasOne(d => d.Item).WithMany(p => p.LogActions)
+                .HasForeignKey(d => d.ItemId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("fk_action_item");
+
+            entity.HasOne(d => d.Pic).WithMany(p => p.LogActions)
+                .HasForeignKey(d => d.PicId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("fk_action_pic");
+        });
+
         modelBuilder.Entity<OrderItem>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("order_item_pkey");
@@ -275,10 +299,10 @@ public partial class AppDbContext : DbContext
             entity.Property(e => e.Id)
                 .HasDefaultValueSql("gen_random_uuid()")
                 .HasColumnName("id");
-            entity.Property(e => e.DateModify)
+            entity.Property(e => e.DateOrder)
                 .HasDefaultValueSql("now()")
                 .HasColumnType("timestamp without time zone")
-                .HasColumnName("date_modify");
+                .HasColumnName("date_order");
             entity.Property(e => e.ItemId).HasColumnName("item_id");
             entity.Property(e => e.PicId).HasColumnName("pic_id");
             entity.Property(e => e.PlanOrder).HasColumnName("plan_order");
@@ -302,7 +326,7 @@ public partial class AppDbContext : DbContext
 
             entity.ToTable("role");
 
-            entity.HasIndex(e => e.RoleNum, "role_role_num_key").IsUnique();
+            entity.HasIndex(e => e.RoleName, "role_role_num_key").IsUnique();
 
             entity.Property(e => e.Id)
                 .HasDefaultValueSql("gen_random_uuid()")
@@ -310,14 +334,13 @@ public partial class AppDbContext : DbContext
             entity.Property(e => e.Descreption)
                 .HasColumnType("character varying")
                 .HasColumnName("descreption");
-            entity.Property(e => e.RoleNum)
+            entity.Property(e => e.RoleName)
                 .HasColumnType("character varying")
-                .HasColumnName("role_num");
+                .HasColumnName("role_name");
         });
 
         OnModelCreatingPartial(modelBuilder);
     }
 
     partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
-}
 }

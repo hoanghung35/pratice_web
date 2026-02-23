@@ -1,12 +1,11 @@
-﻿
-using Content_App.Domain.Entities;
+﻿using Content_App.Domain.Entities;
 
-namespace Content_App.App.Interfaces.Authentication
+namespace Content_App.App.Interfaces
 {
     public interface IRefreshTokenStore
     {
-        Task SaveAsync(RefreshToken token);
         Task<RefreshToken?> FindAsync(string tokenHash);
         Task RevokeAsync(RefreshToken token);
+        Task SaveAsync(RefreshToken token);
     }
 }

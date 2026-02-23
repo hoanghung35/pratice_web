@@ -1,38 +1,63 @@
-﻿using Content_App.App.Services;
+﻿using Content_App.App.DTOs.Item;
+using Content_App.App.Services;
 using Content_App.Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Content_App.Controllers
 {
+    [Route("api/item")]
     [ApiController]
-    [Route("api/items")]
-    public class ItemController : ControllerBase
+    public class ItemController : Controller
     {
-        private readonly ItemService _service;
+        private readonly ItemService _itemService;
+        private readonly ActionService _actionService;
 
-        public ItemController(ItemService service)
+        public ItemController(ItemService itemService, ActionService actionService)
         {
-            _service = service;
+            this._itemService = itemService;
+            this._actionService = actionService;
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetAll()
+        [Authorize(Policy ="dev")]
+        [HttpGet("item-all")]
+        public async Task<IActionResult> GetAllItem()
         {
-            return Ok(await _service.GetAllAsync());
+            return Ok(await _itemService.GetAllAsync());
         }
 
-        [HttpGet("area/{areaId}")]
-        public async Task<IActionResult> GetByArea(Guid areaId)
+        [Authorize(Policy ="admin")]
+        [HttpGet("limit")]
+        public async Task<IActionResult> GetItemByLocation(Guid deptId, Guid areaId)
         {
-            return Ok(await _service.GetByAreaAsync(areaId));
+            return Ok(await _itemService.GetItemByLocationAsync(deptId, areaId));
         }
 
-        [Authorize(Roles = "ADMIN,MANAGER")]
-        [HttpPost]
-        public async Task<IActionResult> Create(Item dto)
+        [Authorize(Policy = "CanCreate")]
+        [HttpPost("create")]
+        public async Task<IActionResult> Create(ItemDto dto)
         {
-            await _service.CreateAsync(dto);
+            await _itemService.CreateAsync(dto);
+            await _actionService.NewItemActionAsync(dto);
+
+            return Ok();
+        }
+
+        [Authorize(Policy ="dev")]
+        [HttpPut("update")]
+        public async Task<IActionResult> Update(Item item)
+        {
+            await _itemService.UpdateItemAsync(item);
+
+            return Ok();
+        }
+
+        [Authorize(Policy ="dev")]
+        [HttpDelete("delete/{id}")]
+        public async Task<IActionResult> DeleteItem(string id)
+        {
+            await _itemService.DeleteAsync(id);
+
             return Ok();
         }
     }

@@ -1,10 +1,22 @@
-﻿namespace Content_App.Infrastructure.Security
+﻿using System.Security.Cryptography;
+using System.Text;
+
+namespace Content_App.Infrastructure.Security
 {
     public class PasswordHasher
     {
-        public bool Verify(string pw1, string pw2)
+        public string SHA_256Hasher(string password)
         {
-            return pw1 == pw2;
+            using (var schema = SHA256.Create())
+            {
+                var bytes = schema.ComputeHash(Encoding.UTF8.GetBytes(password));
+                return Convert.ToBase64String(bytes);
+            }
+        }
+
+        public bool Verify(string login_pw, string password)
+        {
+            return SHA_256Hasher(login_pw) == password;
         }
     }
 }

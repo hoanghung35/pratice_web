@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace Content_App.Domain.Entities;
-
+﻿namespace Content_App.Domain.Entities;
 public partial class OrderItem
 {
     public Guid Id { get; set; }
@@ -17,7 +13,9 @@ public partial class OrderItem
 
     public string Reason { get; set; } = null!;
 
-    public DateTime? DateModify { get; set; }
+    public DateTime? DateOrder { get; set; }
+
+    public virtual ICollection<Approve> Approves { get; set; } = new List<Approve>();
 
     public virtual Item Item { get; set; } = null!;
 

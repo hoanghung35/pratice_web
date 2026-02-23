@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-namespace Content_App.Domain.Entities;
-
-public partial class Action
+﻿namespace Content_App.Domain.Entities;
+public partial class LogAction
 {
     public Guid Id { get; set; }
 
-    public Guid EmpId { get; set; }
+    public string EmpCode { get; set; } = null!;
 
     public Guid PicId { get; set; }
 
@@ -14,13 +11,11 @@ public partial class Action
 
     public int Qty { get; set; }
 
-    public string Status { get; set; } = null!;
+    public string Kind { get; set; } = null!;
 
     public string Reason { get; set; } = null!;
 
     public DateTime? DateAction { get; set; }
-
-    public virtual Employee Emp { get; set; } = null!;
 
     public virtual Item Item { get; set; } = null!;
 

@@ -1,8 +1,4 @@
-﻿using Content_App.App.Interfaces.Authentication;
-using Content_App.Domain.Entities;
-using Content_App.Infrastructure.Data;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Caching.Memory;
+﻿using Microsoft.Extensions.Caching.Memory;
 
 namespace Content_App.Infrastructure.Security
 {
@@ -12,19 +8,18 @@ namespace Content_App.Infrastructure.Security
 
         public RefreshTokenStore(IMemoryCache cache)
         {
-            _cache = cache;
+            this._cache = cache;
         }
 
-        public void Store(Guid userId, string refreshToken, TimeSpan ttl)
+        public void Store(Guid userId, string refreshToken, TimeSpan t)
         {
-            _cache.Set(GetKey(refreshToken), userId, ttl);
+            _cache.Set(GetKey(refreshToken), userId, t);
         }
 
         public Guid? Validate(string refreshToken)
         {
-            return _cache.TryGetValue(GetKey(refreshToken), out Guid userId)
-                ? userId
-                : null;
+            var key = GetKey(refreshToken);
+            return _cache.TryGetValue(GetKey(refreshToken), out Guid userId) ? userId : null;
         }
 
         public void Revoke(string refreshToken)
@@ -32,6 +27,6 @@ namespace Content_App.Infrastructure.Security
             _cache.Remove(GetKey(refreshToken));
         }
 
-        private static string GetKey(string token) => $"refresh_token:{token}";
+        private static string GetKey(string refreshToken) => $"refresh_token: {refreshToken}";
     }
 }

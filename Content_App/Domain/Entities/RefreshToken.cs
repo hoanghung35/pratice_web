@@ -3,13 +3,11 @@
     public class RefreshToken
     {
         public Guid Id { get; set; }
-        public Guid AccountId { get; set; }
-
-        public string TokenHash { get; set; } = null!;
+        public Guid UserId { get; set; }
+        public string TokenHash { get; set;} = null!;
         public DateTime ExpiresAt { get; set; }
-        public DateTime? RevokedAt { get; set; }
-
-        public bool IsExpired => DateTime.UtcNow >= ExpiresAt;
-        public bool IsRevoked => RevokedAt != null;
+        public DateTime? RevokeAt { get; set; }
+        public bool IsExpired => DateTime.UtcNow.AddHours(7) >= ExpiresAt;
+        public bool IsRevoked => RevokeAt != null;
     }
 }

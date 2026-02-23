@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace Content_App.Domain.Entities;
-
+﻿namespace Content_App.Domain.Entities;
 public partial class Approve
 {
     public Guid Id { get; set; }
+
+    public Guid OrderId { get; set; }
 
     public Guid ItemId { get; set; }
 
@@ -15,13 +13,15 @@ public partial class Approve
 
     public string Kind { get; set; } = null!;
 
-    public string Reason { get; set; } = null!;
+    public DateTime? DateRequest { get; set; }
 
-    public DateTime? RequestTime { get; set; }
+    public DateTime? DateApprove { get; set; }
 
     public string Status { get; set; } = null!;
 
     public virtual Item Item { get; set; } = null!;
+
+    public virtual OrderItem Order { get; set; } = null!;
 
     public virtual Account Requestor { get; set; } = null!;
 }

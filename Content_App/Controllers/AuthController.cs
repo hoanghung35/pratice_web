@@ -1,15 +1,13 @@
-﻿using System.Security.Claims;
-using Content_App.App.DTOs.Auth;
+﻿using Content_App.App.DTOs.Auth;
 using Content_App.App.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-
 namespace Content_App.Controllers
 {
+    [Route("api")]
     [ApiController]
-    [Route("api/auth")]
-    public class AuthController : ControllerBase
+    public class AuthController : Controller
     {
         private readonly AuthService _authService;
 
@@ -19,22 +17,25 @@ namespace Content_App.Controllers
         }
 
         [Authorize]
-        [HttpGet("me")]
-        public IActionResult Me()
+        [HttpGet("infor")]
+        public IActionResult GetInfor()
         {
             return Ok(new
             {
-                id = User.FindFirst("sub")?.Value,
-                username = User.Identity?.Name,
-                role = User.FindFirst(ClaimTypes.Role)?.Value
+                userid = User.FindFirst("userid")?.Value,
+                username = User.FindFirst("fullname")?.Value,
+                role = User.FindFirst("rolename")?.Value,
+                roleid = User.FindFirst("roleid")?.Value
             });
         }
 
         [HttpPost("login")]
-        public async Task<IActionResult> Login(LoginRequest dto)
+        public async Task<IActionResult> Login([FromBody] LoginDto dto)
         {
-            var result = await _authService.LoginAsync(dto);
-            WriteCookies(result);
+            var res = await _authService.LoginAsync(dto);
+
+            CookieInit(res);
+
             return Ok();
         }
 
@@ -42,10 +43,12 @@ namespace Content_App.Controllers
         public async Task<IActionResult> Refresh()
         {
             var refreshToken = Request.Cookies["refresh_token"];
+
             if (refreshToken == null) return Unauthorized();
 
             var result = await _authService.RefreshAsync(refreshToken);
-            WriteCookies(result);
+            CookieInit(result);
+
             return Ok();
         }
 
@@ -53,46 +56,49 @@ namespace Content_App.Controllers
         public async Task<IActionResult> Logout()
         {
             var refreshToken = Request.Cookies["refresh_token"];
-
             await _authService.LogoutAsync(refreshToken!);
 
-            // clear cookies
             Response.Cookies.Delete("access_token", new CookieOptions
             {
-                Path = "/",
                 Secure = false,
+                Path = "/",
                 SameSite = SameSiteMode.Lax
             });
-
             Response.Cookies.Delete("refresh_token", new CookieOptions
             {
-                Path = "/",
                 Secure = false,
+                Path = "/",
                 SameSite = SameSiteMode.Lax
             });
 
             return Ok();
         }
 
-
-        private void WriteCookies(AuthResultDto result)
+        [HttpPost("reset-password")]
+        public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordDto dto)
         {
-            Response.Cookies.Append("access_token", result.AccessToken,
-                new CookieOptions { 
-                    HttpOnly = true, 
-                    Secure = false,
-                    Path = "/",
-                    SameSite = SameSiteMode.Lax 
-                });
+            await _authService.ResetPasswordAsync(dto);
+            return Ok();
+        }
 
-            Response.Cookies.Append("refresh_token", result.RefreshToken,
-                new CookieOptions
-                {
-                    HttpOnly = true,
-                    Secure = false,
-                    Path = "/",
-                    Expires = DateTimeOffset.UtcNow.AddDays(7)
-                });
+        private void CookieInit(AuthResultDto result)
+        {
+            Response.Cookies.Append("access_token", result.accessToken, new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = false,
+                Path = "/",
+                SameSite = SameSiteMode.Lax
+            });
+
+            Response.Cookies.Append("refresh_token", result.refreshToken, new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = false,
+                Path = "/",
+                SameSite = SameSiteMode.Lax,
+                Expires = DateTime.UtcNow.AddHours(7)
+            });
         }
     }
 }
