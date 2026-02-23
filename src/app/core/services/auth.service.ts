@@ -8,34 +8,56 @@ export class AuthService {
 
   private me$ = new BehaviorSubject<any | null>(null);
   private _url = "";
+  private accessToken: string | null = null;
+  private _refreshToken: string | null = null;
+  private expireTime: Date | null = null;
+  private claims: any = null;
 
   constructor(private http: HttpClient) { }
 
-  login(username: string, password: string) {
-    return this.http.post(
+  getAccessToken(): string | null {
+    return this.accessToken;
+  }
+
+  login(username: string, password: string): Observable<any> {
+    return this.http.post<any>(
       `${this._url}/login`,
-      { username, password },
-      { withCredentials: true }
+      { username, password }
     ).pipe(
-      tap(() => this.clearMe())
+      tap(response => {
+        this.accessToken = response.access_token;
+        this._refreshToken = response.refresh_token;
+        this.expireTime = new Date(response.expire_time);
+        this.claims = response.claims;
+        this.clearMe();
+      })
     );
   }
 
-  logout() {
+  logout(): Observable<any> {
     return this.http.post(
       `${this._url}/logout`,
-      {},
-      { withCredentials: true }
+      {}
     ).pipe(
-      tap(() => this.clearMe())
+      tap(() => {
+        this.accessToken = null;
+        this._refreshToken = null;
+        this.expireTime = null;
+        this.claims = null;
+        this.clearMe();
+      })
     );
   }
 
-  refreshToken() {
-    return this.http.post(
+  refreshToken(): Observable<any> {
+    return this.http.post<any>(
       `${this._url}/refresh`,
-      {},
-      { withCredentials: true }
+      { refresh_token: this.refreshToken }
+    ).pipe(
+      tap(response => {
+        this.accessToken = response.access_token;
+        this.expireTime = new Date(response.expire_time);
+      })
     );
   }
 
@@ -44,12 +66,12 @@ export class AuthService {
       return of(this.me$.value);
     }
 
-    return this.http.get<any>(
-      `${this._url}/me`,
-      { withCredentials: true }
-    ).pipe(
-      tap(user => this.me$.next(user))
-    );
+    if (this.claims) {
+      this.me$.next(this.claims);
+      return of(this.claims);
+    }
+
+    return of(null);
   }
 
   clearMe() {

@@ -26,10 +26,7 @@ export class LoginComponent {
   }
 
   onSubmit() {
-    if (this.loginForm.valid) {
-      console.log('Dữ liệu đăng nhập:', this.loginForm.value);
-      alert('Đăng nhập thành công (giả lập)!');
-    }
+
   }
 
   login() {

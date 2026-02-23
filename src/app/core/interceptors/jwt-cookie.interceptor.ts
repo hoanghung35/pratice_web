@@ -1,11 +1,20 @@
 import { Injectable } from '@angular/core';
 import { HttpInterceptor, HttpRequest, HttpHandler } from '@angular/common/http';
+import { AuthService } from '../services/auth.service';
 
 @Injectable()
 export class JwtCookieInterceptor implements HttpInterceptor {
+    constructor(private auth: AuthService) { }
+
     intercept(req: HttpRequest<any>, next: HttpHandler) {
-        return next.handle(
-            req.clone({ withCredentials: true })
-        );
+        const token = this.auth.getAccessToken();
+        if (token) {
+            req = req.clone({
+                setHeaders: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
+        }
+        return next.handle(req);
     }
 }
