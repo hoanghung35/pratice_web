@@ -1,10 +1,10 @@
 <div class="login-container">
-    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+    <form [formGroup]="loginForm" (ngSubmit)="login()">
         <h2>Đăng Nhập</h2>
 
         <div class="form-group">
-            <label for="email">Email:</label>
-            <input id="email" type="text" formControlName="email">
+            <label for="username">UserCode:</label>
+            <input id="username" type="text" formControlName="usercode">
 
         </div>
 
@@ -12,7 +12,7 @@
             <label for="password">Mật khẩu:</label>
             <input id="password" type="password" formControlName="password">
             <div *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched" class="error">
-                Mật khẩu phải có ít nhất 6 ký tự.
+                Mật khẩu phải có ít nhất 3 ký tự.
             </div>
         </div>
 

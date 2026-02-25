@@ -7,7 +7,7 @@ import { BehaviorSubject } from 'rxjs';
 export class AuthService {
 
   private me$ = new BehaviorSubject<any | null>(null);
-  private _url = "";
+  private _url = "http://localhost:5251/api";
   private accessToken: string | null = null;
   private _refreshToken: string | null = null;
   private expireTime: Date | null = null;
@@ -19,10 +19,10 @@ export class AuthService {
     return this.accessToken;
   }
 
-  login(username: string, password: string): Observable<any> {
+  login(usercode: string, password: string): Observable<any> {
     return this.http.post<any>(
       `${this._url}/login`,
-      { username, password }
+      { usercode, password }
     ).pipe(
       tap(response => {
         this.accessToken = response.access_token;
