@@ -1,5 +1,7 @@
-﻿using Content_App.App.DTOs.Auth;
+﻿using System.Security.Claims;
+using Content_App.App.DTOs.Auth;
 using Content_App.App.Services;
+using Content_App.Shared.Constants;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -36,7 +38,7 @@ namespace Content_App.Controllers
 
             CookieInit(res);
 
-            return Ok();
+            return Ok(new { message  = "Login Successfully!" });
         }
 
         [HttpPost("refresh")]
