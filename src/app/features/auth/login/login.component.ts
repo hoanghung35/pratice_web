@@ -17,7 +17,6 @@ export class LoginComponent implements OnInit {
     //private readonly auth:AuthService
     | undefined
 
-  //private readonly auth:AuthService
   constructor(private auth: AuthService, private router: Router, private fb: FormBuilder) {
 
   }
@@ -34,8 +33,8 @@ export class LoginComponent implements OnInit {
 
     this.auth.login(usercode, password)
       .subscribe({
-        next: () => this.auth.getMe().subscribe(user => {
-          this.user = user;
+        next: () => this.auth.getMe().subscribe(res => {
+          console.log(res);
           this.router.navigate(['/items'])
         }),
         error: () => console.log('Login failed')

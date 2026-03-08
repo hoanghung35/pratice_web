@@ -1,88 +1,77 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, of, tap } from 'rxjs';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable, of } from 'rxjs';
+import { catchError, map, switchMap, tap } from 'rxjs/operators';
+
+export interface UserInfo {
+  id: string;
+  usercode: string;
+  role: string;
+}
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
 
-  private me$ = new BehaviorSubject<any | null>(null);
-  private _url = "http://localhost:5251/api";
-  private accessToken: string | null = null;
-  private _refreshToken: string | null = null;
-  private expireTime: Date | null = null;
-  private claims: any = null;
+  private readonly _url = 'http://localhost:5251/api';
+
+  private _user = new BehaviorSubject<UserInfo | null>(null);
+  user$ = this._user.asObservable();
 
   constructor(private http: HttpClient) { }
 
-  getAccessToken(): string | null {
-    return this.accessToken;
-  }
-
-  login(usercode: string, password: string): Observable<any> {
-    return this.http.post<any>(
+  login(usercode: string, password: string): Observable<UserInfo> {
+    return this.http.post<void>(
       `${this._url}/login`,
-      { usercode, password }
+      { usercode, password },
+      { withCredentials: true }
     ).pipe(
-      tap(response => {
-        this.accessToken = response.access_token;
-        this._refreshToken = response.refresh_token;
-        this.expireTime = new Date(response.expire_time);
-        this.claims = response.claims;
-        this.clearMe();
-      })
+      switchMap(() => this.fetchUserInfo())
     );
   }
 
-  logout(): Observable<any> {
-    return this.http.post(
+  logout(): Observable<void> {
+    return this.http.post<void>(
       `${this._url}/logout`,
-      {}
+      {},
+      { withCredentials: true }
     ).pipe(
-      tap(() => {
-        this.accessToken = null;
-        this._refreshToken = null;
-        this.expireTime = null;
-        this.claims = null;
-        this.clearMe();
-      })
+      tap(() => this._user.next(null))
     );
   }
 
-  refreshToken(): Observable<any> {
-    return this.http.post<any>(
+  refreshToken(): Observable<void> {
+    return this.http.post<void>(
       `${this._url}/refresh`,
-      { refresh_token: this.refreshToken }
-    ).pipe(
-      tap(response => {
-        this.accessToken = response.access_token;
-        this.expireTime = new Date(response.expire_time);
-      })
+      {},
+      { withCredentials: true }
     );
   }
 
-  getMe(force = false): Observable<any> {
-    if (!force && this.me$.value) {
-      return of(this.me$.value);
-    }
-
-    if (this.claims) {
-      this.me$.next(this.claims);
-      return of(this.claims);
-    }
-
-    return of(null);
+  fetchUserInfo(): Observable<UserInfo> {
+    return this.http.get<UserInfo>(`${this._url}/infor`, { withCredentials: true })
+      .pipe(tap(u => this._user.next(u)));
   }
 
-  clearMe() {
-    this.me$.next(null);
+  getMe(force = false): Observable<UserInfo | null> {
+    if (!force && this._user.value) {
+      return of(this._user.value);
+    }
+    return this.fetchUserInfo().pipe(
+      catchError(() => of(null))
+    );
   }
 
-  get user$() {
-    return this.me$.asObservable();
+  isAuthenticated(): Observable<boolean> {
+    if (this._user.value) {
+      return of(true);
+    }
+    return this.fetchUserInfo().pipe(
+      map(u => !!u),
+      catchError(() => of(false))
+    );
   }
 
   get role(): string | null {
-    return this.me$.value?.role ?? null;
+    return this._user.value?.role ?? null;
   }
 }

@@ -18,8 +18,9 @@ import { LoginComponent } from './features/auth/login/login.component';
 import { OrderComponent } from './features/order/order.component';
 import { ApproveComponent } from './features/approve/approve.component';
 import { MainLayoutComponent } from './layouts/main-layout/main-layout.component';
-import { HttpClientModule } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { ReactiveFormsModule } from '@angular/forms';
+import { JwtCookieInterceptor } from './core/interceptors/jwt-cookie.interceptor';
 
 @NgModule({
   declarations: [
@@ -46,7 +47,8 @@ import { ReactiveFormsModule } from '@angular/forms';
     ReactiveFormsModule
   ],
   providers: [
-    provideClientHydration(withEventReplay())
+    provideClientHydration(withEventReplay()),
+    { provide: HTTP_INTERCEPTORS, useClass: JwtCookieInterceptor, multi: true }
   ],
   bootstrap: [AppComponent]
 })

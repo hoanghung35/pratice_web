@@ -1,19 +1,17 @@
 import { Injectable } from "@angular/core";
-import { AuthService } from "../services/auth.service";
-import { CanActivate, GuardResult, MaybeAsync, Router, RouterStateSnapshot } from "@angular/router";
-import { ActivatedRouteSnapshot } from "@angular/router";
-import { catchError, map, Observable, of } from "rxjs";
+import { CanActivate, ActivatedRouteSnapshot, Router } from "@angular/router";
+import { AuthService, UserInfo } from "../services/auth.service";
+import { map, tap } from "rxjs/operators";
 
 @Injectable({ providedIn: 'root' })
 export class RoleGuard implements CanActivate {
     constructor(private auth: AuthService, private router: Router) { }
 
-    canActivate(route: ActivatedRouteSnapshot): Observable<boolean> {
-        const roles = route.data['roles'] as string[];
-
+    canActivate(route: ActivatedRouteSnapshot) {
+        const allowed: string[] = route.data['roles'] ?? [];
         return this.auth.getMe().pipe(
-            map(user => roles.includes(user.role)),
-            catchError(() => of(false))
+            map((u: UserInfo | null) => !!u && allowed.includes(u.role)),
+            tap(ok => { if (!ok) this.router.navigate(['/']); })
         );
     }
 }
