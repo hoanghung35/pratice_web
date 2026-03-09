@@ -13,10 +13,7 @@ import { HomepageComponent } from './shared/homepage/homepage.component';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatCardModule } from '@angular/material/card';
 import { MatMenuModule } from '@angular/material/menu';
-import { ItemComponent } from './features/item/item.component';
 import { LoginComponent } from './features/auth/login/login.component';
-import { OrderComponent } from './features/order/order.component';
-import { ApproveComponent } from './features/approve/approve.component';
 import { MainLayoutComponent } from './layouts/main-layout/main-layout.component';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { ReactiveFormsModule } from '@angular/forms';
@@ -28,8 +25,6 @@ import { JwtCookieInterceptor } from './core/interceptors/jwt-cookie.interceptor
     NavbarComponent,
     HomepageComponent,
     LoginComponent,
-    OrderComponent,
-    ApproveComponent,
     MainLayoutComponent
   ],
   imports: [

@@ -11,6 +11,6 @@ export class ItemService {
   constructor(private http: HttpClient) { }
 
   getItems() {
-    return this.http.get<Item[]>('/api/items');
+    return this.http.get<Item[]>('http://localhost:5251/api/items');
   }
 }

@@ -9,15 +9,13 @@ describe('ItemComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [ItemComponent]
-    })
-    .compileComponents();
 
     fixture = TestBed.createComponent(ItemComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+      component = fixture.componentInstance;
+      fixture.detectChanges();
+    });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
+    it('should create', () => {
+      expect(component).toBeTruthy();
+    });
   });
-});

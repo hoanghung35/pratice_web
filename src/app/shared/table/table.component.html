@@ -10,12 +10,14 @@
     <tbody>
         @for (row of data; track row || $index) {
         <tr>
-            @for (col of columns; track col.key) {
+            @for (col of columns; track col.label) {
             <td>
-                @if (col.render) {
+                @if (col.template) {
+                <ng-container *ngTemplateOutlet="col.template; context: { $implicit: row }"></ng-container>
+                } @else if (col.render) {
                 {{ col.render(row) }}
                 } @else {
-                {{ row[col.key] }}
+                {{ row[col.key!] }}
                 }
             </td>
             }
