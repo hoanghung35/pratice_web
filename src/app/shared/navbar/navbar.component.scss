@@ -1,5 +1,22 @@
+.main-toolbar {
+  position: fixed;
+  top: 0;
+  z-index: 2;
+  width: 100%;
+}
+
+/* push the sidenav container below the fixed toolbar */
 .sidenav-container {
-  height: 100%;
+  margin-top: 64px;
+  height: calc(100vh - 64px);
+}
+
+/* mobile breakpoint toolbar height is 56px */
+@media (max-width: 599px) {
+  .sidenav-container {
+    margin-top: 56px;
+    height: calc(100vh - 56px);
+  }
 }
 
 .sidenav {
@@ -8,10 +25,4 @@
 
 .sidenav .mat-toolbar {
   background: inherit;
-}
-
-.mat-toolbar.mat-primary {
-  position: sticky;
-  top: 0;
-  z-index: 1;
 }
