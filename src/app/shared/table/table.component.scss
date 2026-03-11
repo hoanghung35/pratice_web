@@ -1,0 +1,15 @@
+/* simple styling for pager */
+.paginator {
+    margin-top: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.paginator button {
+    padding: 0.25rem 0.5rem;
+}
+
+.paginator select {
+    margin-left: 0.25rem;
+}
