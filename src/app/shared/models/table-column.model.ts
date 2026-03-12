@@ -1,7 +1,8 @@
 import { TemplateRef } from '@angular/core';
 
 export interface TableColumn<T> {
-    key?: keyof T;                       // optional when you use a template
+    id?: string;
+    key?: keyof T;
     label: string;
     render?: (row: T) => string;
     template?: TemplateRef<{ $implicit: T }>;

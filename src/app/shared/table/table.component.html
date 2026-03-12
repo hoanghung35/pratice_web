@@ -1,47 +1,24 @@
-<table>
-    <thead>
-        <tr>
-            @for (col of columns; track col.label) {
-            <th>{{ col.label }}</th>
-            }
-        </tr>
-    </thead>
-
-    <tbody>
-        @for (row of paginatedData; track row || $index) {
-        <tr>
-            @for (col of columns; track col.label) {
-            <td>
-                @if (col.template) {
+<table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+    <!-- dynamic column definitions -->
+    <ng-container *ngFor="let col of columns; let i = index" [matColumnDef]="getColumnId(col, i)">
+        <th mat-header-cell *matHeaderCellDef>{{ col.label }}</th>
+        <td mat-cell *matCellDef="let row">
+            <ng-container *ngIf="col.template; else valueTpl">
                 <ng-container *ngTemplateOutlet="col.template; context: { $implicit: row }"></ng-container>
-                } @else if (col.render) {
-                {{ col.render(row) }}
-                } @else {
-                {{ row[col.key!] }}
-                }
-            </td>
-            }
-        </tr>
-        } @empty {
-        <tr>
-            <td [attr.colspan]="columns.length">No data available.</td>
-        </tr>
-        }
-    </tbody>
+            </ng-container>
+            <ng-template #valueTpl>
+                <ng-container *ngIf="col.render; else defaultTpl">
+                    {{ col.render(row) }}
+                </ng-container>
+                <ng-template #defaultTpl>{{ row[col.key!] }}</ng-template>
+            </ng-template>
+        </td>
+    </ng-container>
+
+    <!-- header and row rows -->
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
 </table>
 
-<!-- simple pager -->
-<div *ngIf="data.length > 0" class="paginator">
-    <button (click)="prevPage()" [disabled]="currentPage === 0">Previous</button>
-    <span>Page {{ currentPage + 1 }} of {{ totalPages }}</span>
-    <button (click)="nextPage()" [disabled]="currentPage >= totalPages - 1">Next</button>
-
-    <label>
-        Items per page:
-        <select [(ngModel)]="pageSize" (ngModelChange)="pageSizeChanged($event)">
-            @for (size of pageSizeOptions; track size) {
-            <option [value]="size">{{ size }}</option>
-            }
-        </select>
-    </label>
-</div>
+<mat-paginator [pageSize]="pageSize" [pageSizeOptions]="pageSizeOptions" showFirstLastButtons>
+</mat-paginator>
