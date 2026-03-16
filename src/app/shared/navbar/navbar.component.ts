@@ -17,4 +17,13 @@ export class NavbarComponent {
       map(result => result.matches),
       shareReplay()
     );
+
+  expanded = {
+    mobile: false,
+    frameworks: false
+  };
+
+  toggleSection(section: 'mobile' | 'frameworks') {
+    this.expanded[section] = !this.expanded[section];
+  }
 }

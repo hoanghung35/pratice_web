@@ -26,3 +26,20 @@
 .sidenav .mat-toolbar {
   background: inherit;
 }
+
+/* expandable section styling */
+.expandable {
+  cursor: pointer;
+}
+
+.spacer {
+  flex: 1 1 auto;
+}
+
+.sub-list {
+  padding-left: 16px;
+}
+
+.sub-list a.mat-list-item {
+  padding-left: 24px;
+}

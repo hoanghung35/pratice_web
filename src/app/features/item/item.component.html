@@ -1,6 +1,12 @@
 <ng-template #action let-item>
-    <button (click)="edit(item.id)">Edit</button>
-    <button (click)="delete(item.id)">Delete</button>
+    <div class="action-buttons">
+        <button mat-icon-button color="primary" aria-label="Edit" (click)="edit(item.id)">
+            <mat-icon>edit</mat-icon>
+        </button>
+        <button mat-icon-button color="warn" aria-label="Delete" (click)="delete(item.id)">
+            <mat-icon>delete</mat-icon>
+        </button>
+    </div>
 </ng-template>
 
 <app-table [columns]="columns" [data]="items" [pageSize]="5" [pageSizeOptions]="[5, 10, 25]"></app-table>
