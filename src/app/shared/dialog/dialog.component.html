@@ -1,0 +1,21 @@
+<!-- shared-dialog.component.html -->
+<h2 mat-dialog-title>{{ data.title }}</h2>
+
+<mat-dialog-content>
+    <p *ngIf="data.content">{{ data.content }}</p>
+
+    <!-- Render form nếu type là 'form' -->
+    <div *ngIf="data.type === 'form'" [formGroup]="form">
+        <mat-form-field *ngFor="let field of data.fields" class="full-width">
+            <mat-label>{{ field.label }}</mat-label>
+            <input matInput [formControlName]="field.name" [type]="field.type">
+        </mat-form-field>
+    </div>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+    <button mat-button (click)="onNoClick()">{{ data.cancelText || 'Hủy' }}</button>
+    <button mat-raised-button color="primary" (click)="onConfirm()">
+        {{ data.confirmText || 'Xác nhận' }}
+    </button>
+</mat-dialog-actions>
