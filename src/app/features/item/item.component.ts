@@ -5,6 +5,8 @@ import { Item } from '../../shared/models/item.model';
 import { TableColumn } from '../../shared/models/table-column.model';
 import { DatePipe } from '@angular/common';
 import { SharedModule } from '../../shared/shared.module';
+import { Observable } from 'rxjs';
+import { HttpEvent } from '@angular/common/http';
 
 @Component({
   selector: 'app-item',
@@ -85,5 +87,13 @@ export class ItemComponent implements OnInit, AfterViewInit {
 
   delete(id: string) {
 
+  }
+
+  importFile(file: File) {
+    this.itemService.importFile(file).subscribe();
+  }
+
+  exportItem() {
+    this.itemService.exportItem();
   }
 }

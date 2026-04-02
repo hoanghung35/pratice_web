@@ -26,9 +26,7 @@ const routes: Routes = [
       {
         path: 'orders',
         loadChildren: () => import('./features/order/order.module')
-          .then(m => m.OrderModule),
-        canActivate: [RoleGuard],
-        data: { roles: ['admin', 'manager'] }
+          .then(m => m.OrderModule)
       }
     ]
   },
