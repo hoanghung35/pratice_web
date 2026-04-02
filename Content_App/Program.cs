@@ -8,6 +8,7 @@ using Content_App.Infrastructure.Data;
 using Content_App.Infrastructure.Security;
 using Content_App.Shared.Constants;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 
@@ -19,6 +20,7 @@ builder.Services.AddControllers().AddJsonOptions(options =>
 {
     options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
 });
+
 
 builder.Services.AddMemoryCache();
 

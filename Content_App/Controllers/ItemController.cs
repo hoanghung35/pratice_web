@@ -3,10 +3,11 @@ using Content_App.App.Services;
 using Content_App.Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using OfficeOpenXml;
 
 namespace Content_App.Controllers
 {
-    [Route("api/item")]
+    [Route("api/items")]
     [ApiController]
     public class ItemController : Controller
     {
@@ -20,7 +21,7 @@ namespace Content_App.Controllers
         }
 
         [Authorize(Policy ="dev")]
-        [HttpGet("item-all")]
+        [HttpGet]
         public async Task<IActionResult> GetAllItem()
         {
             return Ok(await _itemService.GetAllAsync());
@@ -59,6 +60,18 @@ namespace Content_App.Controllers
             await _itemService.DeleteAsync(id);
 
             return Ok();
+        }
+
+        [HttpGet("export-item")]
+        public IActionResult Export()
+        {
+            using (var package = new ExcelPackage())
+            {
+                var worksheet = package.Workbook.Worksheets.Add("Sheet1");
+                // Đổ dữ liệu vào...
+                var content = package.GetAsByteArray();
+                return File(content, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Report.xlsx");
+            }
         }
     }
 }

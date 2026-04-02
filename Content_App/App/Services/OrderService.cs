@@ -1,6 +1,8 @@
 ﻿using Content_App.App.DTOs.Order;
 using Content_App.Domain.Entities;
 using Content_App.Infrastructure.Data;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Design.Internal;
 
 namespace Content_App.App.Services
 {
@@ -13,6 +15,29 @@ namespace Content_App.App.Services
             this._context = context;
         }
 
+        public async Task <List<OrderDto>> GetOrderAsync()
+        {
+            var data = await _context.OrderItems
+                .Join(_context.Items,
+                order => order.ItemId,
+                item => item.Id,
+                (order, item) => new {order, item})
+                .Select(res => new
+                {
+                    id = res.order.Id,
+                    enname = res.item.EnName,
+                    vnname = res.item.VnName,
+                    maker = res.item.Maker,
+                    qty = res.item.Quantity,
+                    position = res.item.PositionIn,
+                    dateOrder = res.order.DateOrder
+                })
+                .ToListAsync();
+
+            List<OrderDto> res = new List<OrderDto>();
+
+            return res;
+        } 
         public async Task<Guid> CreateOrder(CreateOrderDto dto, Guid userId)
         {
             var order = new OrderItem
