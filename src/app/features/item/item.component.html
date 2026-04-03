@@ -9,4 +9,12 @@
     </div>
 </ng-template>
 
+<div class="upload-file">
+    <h3>Upload Excel</h3>
+
+    <input type="file" (change)="onFileChange($event)" accept=".xlsx, .xls" />
+
+    <button [disabled]="!file" (click)="submit()">Upload</button>
+</div>
+
 <app-table [columns]="columns" [data]="items" [pageSize]="5" [pageSizeOptions]="[5, 10, 25]"></app-table>

@@ -4,9 +4,6 @@ import { DialogService } from '../../core/services/dialog.service';
 import { Item } from '../../shared/models/item.model';
 import { TableColumn } from '../../shared/models/table-column.model';
 import { DatePipe } from '@angular/common';
-import { SharedModule } from '../../shared/shared.module';
-import { Observable } from 'rxjs';
-import { HttpEvent } from '@angular/common/http';
 
 @Component({
   selector: 'app-item',
@@ -16,6 +13,7 @@ import { HttpEvent } from '@angular/common/http';
 })
 export class ItemComponent implements OnInit, AfterViewInit {
   items: Item[] = [];
+  file!: File;
 
   @ViewChild('action', { static: true })
   actionTpl!: TemplateRef<any>;
@@ -89,8 +87,14 @@ export class ItemComponent implements OnInit, AfterViewInit {
 
   }
 
-  importFile(file: File) {
-    this.itemService.importFile(file).subscribe();
+  onFileChange(event: any) {
+    this.file = event.target.files[0];
+  }
+
+  importFile() {
+    if (this.file) {
+      this.itemService.importFile(this.file).subscribe();
+    }
   }
 
   exportItem() {
