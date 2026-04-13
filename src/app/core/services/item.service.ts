@@ -16,6 +16,10 @@ export class ItemService {
     return this.http.get<Item[]>('http://localhost:5251/api/items');
   }
 
+  createItem(item: Partial<Item>) {
+    return this.http.post<Item>('http://localhost:5251/api/items', item);
+  }
+
   updateItem(id: string, item: Partial<Item>) {
     return this.http.put<Item>(`http://localhost:5251/api/items/${id}`, item);
   }

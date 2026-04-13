@@ -4,6 +4,8 @@ import { DialogService } from '../../core/services/dialog.service';
 import { Item } from '../../shared/models/item.model';
 import { TableColumn } from '../../shared/models/table-column.model';
 import { DatePipe } from '@angular/common';
+import { MatDialog } from '@angular/material/dialog';
+import { CreateItemComponent } from './item.dialog/create.item/create.item.component';
 
 @Component({
   selector: 'app-item',
@@ -40,6 +42,7 @@ export class ItemComponent implements OnInit, AfterViewInit {
   constructor(
     private itemService: ItemService,
     private dialogService: DialogService,
+    private dialog: MatDialog,
     private datePipe: DatePipe,
     private cdRef: ChangeDetectorRef
   ) { }
@@ -49,6 +52,19 @@ export class ItemComponent implements OnInit, AfterViewInit {
       this.items = res;
 
       this.cdRef.detectChanges();
+    });
+  }
+
+  create() {
+    const dialogRef = this.dialog.open(CreateItemComponent, {
+      width: '800px'
+    });
+
+    dialogRef.afterClosed().subscribe((createdItem: Item) => {
+      if (createdItem) {
+        this.items.unshift(createdItem);
+        this.cdRef.detectChanges();
+      }
     });
   }
 
@@ -66,7 +82,8 @@ export class ItemComponent implements OnInit, AfterViewInit {
         { name: 'maker', label: 'Maker', type: 'text', value: item.maker },
         { name: 'positionIn', label: 'Position', type: 'text', value: item.positionIn }
       ],
-      confirmText: 'Save'
+      okText: 'Save',
+      cancelText: 'Cancel'
     };
 
     this.dialogService.openCustomDialog(dialogConfig).afterClosed().subscribe((result: any) => {
@@ -99,5 +116,9 @@ export class ItemComponent implements OnInit, AfterViewInit {
 
   exportItem() {
     this.itemService.exportItem();
+  }
+
+  submit() {
+
   }
 }
