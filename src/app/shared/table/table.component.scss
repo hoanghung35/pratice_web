@@ -1,3 +1,27 @@
+/* table wrapper with fixed height and scrolling body */
+.table-wrapper {
+    max-height: 450px;
+    overflow: auto;
+    width: 100%;
+}
+
+table.mat-elevation-z8 {
+    width: 100%;
+    min-width: 600px;
+    border-collapse: collapse;
+}
+
+th.mat-header-cell {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    background: white;
+}
+
+tr.mat-header-row {
+    background: white;
+}
+
 /* simple styling for pager */
 .paginator {
     margin-top: 0.5rem;

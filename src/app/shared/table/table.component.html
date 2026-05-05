@@ -1,24 +1,26 @@
-<table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
-    <!-- dynamic column definitions -->
-    <ng-container *ngFor="let col of columns; let i = index" [matColumnDef]="getColumnId(col, i)">
-        <th mat-header-cell *matHeaderCellDef>{{ col.label }}</th>
-        <td mat-cell *matCellDef="let row">
-            <ng-container *ngIf="col.template; else valueTpl">
-                <ng-container *ngTemplateOutlet="col.template; context: { $implicit: row }"></ng-container>
-            </ng-container>
-            <ng-template #valueTpl>
-                <ng-container *ngIf="col.render; else defaultTpl">
-                    {{ col.render(row) }}
+<div class="table-wrapper">
+    <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+        <!-- dynamic column definitions -->
+        <ng-container *ngFor="let col of columns; let i = index" [matColumnDef]="getColumnId(col, i)">
+            <th mat-header-cell *matHeaderCellDef>{{ col.label }}</th>
+            <td mat-cell *matCellDef="let row">
+                <ng-container *ngIf="col.template; else valueTpl">
+                    <ng-container *ngTemplateOutlet="col.template; context: { $implicit: row }"></ng-container>
                 </ng-container>
-                <ng-template #defaultTpl>{{ row[col.key!] }}</ng-template>
-            </ng-template>
-        </td>
-    </ng-container>
+                <ng-template #valueTpl>
+                    <ng-container *ngIf="col.render; else defaultTpl">
+                        {{ col.render(row) }}
+                    </ng-container>
+                    <ng-template #defaultTpl>{{ row[col.key!] }}</ng-template>
+                </ng-template>
+            </td>
+        </ng-container>
 
-    <!-- header and row rows -->
-    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-</table>
+        <!-- header and row rows -->
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+</div>
 
 <mat-paginator [pageSize]="pageSize" [pageSizeOptions]="pageSizeOptions" showFirstLastButtons>
 </mat-paginator>
