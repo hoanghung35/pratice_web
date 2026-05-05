@@ -51,6 +51,28 @@ namespace Content_App.App.Services
             }
         }
 
+        public async Task ReportMonthlyAsync(DateTime? fromD, DateTime toD)
+        {
+            var res = await _context.Items
+                    .Select(item => new
+                    {
+                        itemCode = item.ItemCode,
+                        enName = item.EnName,
+                        vnName = item.VnName,
+                        maker = item.Maker,
+                        supplier = item.Supplier,
+                        position_in = item.PositionIn,
+                        remain = item.Quantity,
+                        totalIn = item.LogActions
+                            .Where(x => (x.Kind == "receive" || x.Kind == "create")
+                            && x.DateAction >= fromD && x.DateAction < toD.AddDays(1))
+                            .Sum(x => (int?)x.Qty ?? 0),
+                        totalOut = item.LogActions
+                            .Where(x => x.Kind == "delivery" && x.DateAction >= fromD && x.DateAction < toD.AddDays(1))
+                            .Sum(x => (int?)x.Qty ?? 0)
+                    }).ToListAsync();
+        }
+
         public async Task UpdateItemActionAsync(Item item, Guid userId)
         {
             var user = await _context.Accounts.FindAsync(userId);
