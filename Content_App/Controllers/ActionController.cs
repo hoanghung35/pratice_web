@@ -67,5 +67,14 @@ namespace Content_App.Controllers
 
             return File(fileData, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
         }
+
+        [HttpGet("invent/condition")]
+        public async Task<IActionResult> InventoryWithCondition([FromQuery] InventDto dto)
+        {
+            var fromUtc = dto.fromD.UtcDateTime;
+            var toUtc = dto.toD.UtcDateTime;
+
+            return Ok();
+        }
     }
 }
