@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Item } from '../../shared/models/item.model';
-import { HttpClient, HttpEvent } from '@angular/common/http';
+import { HttpClient, HttpEvent, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { blob } from 'stream/consumers';
 
@@ -14,6 +14,14 @@ export class ItemService {
 
   getItems() {
     return this.http.get<Item[]>('http://localhost:5251/api/items');
+  }
+
+  getItemsWithCondition(fromD: Date, toD: Date) {
+    const params = new HttpParams()
+      .set('fromDate', fromD.toISOString())
+      .set('toDate', toD.toISOString());
+
+    this.http.get('http://localhost:5251/api/items', { params });
   }
 
   createItem(item: Partial<Item>) {
