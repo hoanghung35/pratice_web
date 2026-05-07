@@ -18,6 +18,8 @@ import { MainLayoutComponent } from './layouts/main-layout/main-layout.component
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { ReactiveFormsModule } from '@angular/forms';
 import { JwtCookieInterceptor } from './core/interceptors/jwt-cookie.interceptor';
+import { LoadingInterceptor } from './core/interceptors/loading.interceptor';
+import { LoadingComponent } from './shared/loading/loading.component';
 
 @NgModule({
   declarations: [
@@ -39,11 +41,13 @@ import { JwtCookieInterceptor } from './core/interceptors/jwt-cookie.interceptor
     MatCardModule,
     MatMenuModule,
     HttpClientModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    LoadingComponent
   ],
   providers: [
     provideClientHydration(withEventReplay()),
-    { provide: HTTP_INTERCEPTORS, useClass: JwtCookieInterceptor, multi: true }
+    { provide: HTTP_INTERCEPTORS, useClass: JwtCookieInterceptor, multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: LoadingInterceptor, multi: true }
   ],
   bootstrap: [AppComponent]
 })
