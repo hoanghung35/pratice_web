@@ -9,6 +9,14 @@ table.mat-elevation-z8 {
     width: 100%;
     min-width: 600px;
     border-collapse: collapse;
+    table-layout: fixed;
+}
+
+th.mat-header-cell,
+td.mat-cell {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 th.mat-header-cell {

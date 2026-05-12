@@ -24,16 +24,17 @@ export class ItemComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit() {
     this.columns = [
-      { key: 'enName', label: 'EN Name' },
-      { key: 'vnName', label: 'VN Name' },
-      { key: 'maker', label: 'Maker' },
+      { key: 'enName', label: 'EN Name', width: '180px' },
+      { key: 'vnName', label: 'VN Name', width: '180px' },
+      { key: 'maker', label: 'Maker', width: '140px' },
       {
         key: 'quantity',
         label: 'Qty',
+        width: '90px',
         render: i => i.quantity.toString()
       },
-      { key: 'positionIn', label: 'Position' },
-      { label: 'Actions', template: this.actionTpl }
+      { key: 'positionIn', label: 'Position', width: '140px' },
+      { label: 'Actions', template: this.actionTpl, width: '120px' }
     ];
 
     this.cdRef.detectChanges();
