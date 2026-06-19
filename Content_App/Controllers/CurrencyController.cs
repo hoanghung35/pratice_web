@@ -9,9 +9,8 @@ namespace Content_App.Controllers
 {
     [Route("api/currency")]
     [ApiController]
-    public class ActionController : Controller
+    public class CurrencyController : Controller
     {
-        private readonly LogDbContext _context;
         private readonly CurrencyService _currencyService;
 
         public CurrencyController(CurrencyController service) {
