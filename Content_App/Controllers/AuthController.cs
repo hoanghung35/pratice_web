@@ -7,15 +7,19 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Content_App.Controllers
 {
-    [Route("api")]
+    [Route("api/")]
     [ApiController]
     public class AuthController : Controller
     {
         private readonly AuthService _authService;
+        private readonly MailService _mailService;
+        private readonly FileService _fileService;
 
-        public AuthController(AuthService authService)
+        public AuthController(AuthService authService, MailService mailService, FileService fileService)
         {
-            _authService = authService;
+            this._authService = authService;
+            this._mailService = mailService;
+            this._fileService = fileService;
         }
 
         [Authorize]
@@ -27,7 +31,8 @@ namespace Content_App.Controllers
                 userid = User.FindFirst("userid")?.Value,
                 username = User.FindFirst("fullname")?.Value,
                 role = User.FindFirst("rolename")?.Value,
-                roleid = User.FindFirst("roleid")?.Value
+                roleid = User.FindFirst("roleid")?.Value,
+                contact = User.FindFirst("user_email")?.Value
             });
         }
 
@@ -37,8 +42,12 @@ namespace Content_App.Controllers
             var res = await _authService.LoginAsync(dto);
 
             CookieInit(res);
+            var ipClient = Request.Headers["X-Forwarded-For"].FirstOrDefault() ?? HttpContext.Connection.RemoteIpAddress?.ToString();
+            var userName = User.FindFirst(JwtClaimConstant.UserName)?.Value;
 
-            return Ok(new { message  = "Login Successfully!" });
+            _fileService.RecordUserAction(VariableConstant.pathRecord, ipClient, dto.userCode)
+
+            return Ok();
         }
 
         [HttpPost("refresh")]
@@ -76,10 +85,14 @@ namespace Content_App.Controllers
             return Ok();
         }
 
-        [HttpPost("reset-password")]
-        public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordDto dto)
-        {
-            await _authService.ResetPasswordAsync(dto);
+        [HttpPost("forget-password")]
+        public async Task<IActionResult> ForgetPassword([FromBody] ForgetPasswordDto dto) {
+            var result = await _authService.ForgetPasswordAsync(dto);
+            var temp = result.Split("|");
+            var content = _mailService.ContentInit(temp[2], dto.UserCode!, temp[0], "reset", true);
+            var msg = _mailService.CreateMailFull([temp[1]], "[Notification] NEW PASSWORD FROM SYSTEM", content, [], [], []);
+            await _mailService.SendMail(msg);
+
             return Ok();
         }
 
