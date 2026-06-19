@@ -245,6 +245,65 @@ namespace Content_App.App.Services
 
             return res;
         }
-        
+
+        private async Task<IEnumerable<dynamic>> GetDataReport(Guid userId, string roleName, DateTime fromD, DateTime toD)
+        {
+            var user = await _context.Employees.FindAsync(userId);
+
+            var data = await _context.Items
+                .Where(x => x.DeletedAt == null)
+                .Select(item => new
+                {
+                    id = item.Id,
+                    itemCode = item.ItemCode,
+                    enName = item.EnName,
+                    vnName = item.VnName,
+                    unit = item.Unit,
+                    cost = item.Cost,
+                    maker = item.Maker,
+                    position_in = item.PositionIn,
+                    currency = item.Currency,
+                    remain = item.Quantity,
+                    deptId = item.DeptId,
+                    totalIn = item.LogActions
+                        .Where(x => (x.Kind.ToLower() == "receive" || x.Kind.ToLower() == "create") && x.DateAction >= fromD && x.DateAction <= toD.AddDays(1))
+                        .Sum(x => (int?)x.Qty ?? 0),
+                    totalOut = item.LogActions
+                        .Where(x => x.Kind.ToLower() == "delivery"  && x.DateAction >= fromD && x.DateAction <= toD.AddDays(1))
+                        .Sum(x => (int?)x.Qty ?? 0),
+                })
+                .ToListAsync();
+            if(data.Count() == 0) return new List<object>{ };
+
+            //Filter data follow role
+            //GM, dev ==> get all
+            //Mgr, admin, super ==> follow dept
+            bool isLimitData = roleName == "admin" || roleName == "super" || roleName == "manager";
+            if(isLimitData)
+            {
+                for(var i = 0; i < data.Count(); i++)
+                {
+                    if(data[i].deptId != user!.DeptId)
+                    {
+                        data.Remove(data[i]);
+                        i--;
+                    }
+                }
+            }
+
+            return data;
+        }
+
+        private decimal ExchangeValue(string? exchangeName, decimal exhcangevalue, List<Currency> dto)
+        {
+            foreach(var c in dto)
+            {
+                if(c.CurrentName!.ToLower() == exchangeName)
+                {
+                    return (decimal)(exchangevalue / c.ExchangeRate!);
+                }
+            }
+            return exchangevalue;
+        }
     }
 }
