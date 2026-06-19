@@ -10,71 +10,73 @@ using System.IdentityModel.Tokens.Jwt;
 
 namespace Content_App.Controllers
 {
-    [Route("api/action")]
+    [Route("api")]
     [ApiController]
     public class ActionController : Controller
     {
         private readonly LogDbContext _context;
-        private readonly ILogger<ActionController> _logger;
         private readonly FileService _fileService;
-
-        public ActionController(LogDbContext context, ILogger<ActionController> logger, FileService fileService)
-        {
+        private readonly ILogger<Actioncontroller> _logger;
+        private readonly ActionService _actionService;
+        
+       public ActionController(LogDbContext context, ILogger<ActionController> logger, FileService fileService, ActionService actionService) {
             this._context = context;
             this._logger = logger;
             this._fileService = fileService;
-        }
+            this._actionService = actionService;
+       }
 
-        [Authorize(Policy ="dev")]
-        [HttpPost("create-item")]
-        public async Task CreateItem(ItemDto dto)
-        {
-            try
-            {
-                var item = new Item
-                {
-                    VnName = dto.VnName,
-                    EnName = dto.EnName,
-                    Maker = dto.Maker,
-                    Supplier = dto.Supplier,
-                    PositionIn = dto.PositionIn,
-                    Quantity = dto.Quantity,
-                    Unit = dto.Unit,
-                    Cost = dto.Cost,
-                    Image = dto.Image
-                };
+       [Authorize]
+       [HttpGet("invent")]
+       public async Task<IActionResult> GetInvent() {
+            var userId = User.FindFirst(JwtClainConstant.UserId)?.Value!;
+            var roleName = User.FindFirst(JwtClaimConstant.Role)?.Value!;
 
-                _context.Items.Add(item);
-                await _context.SaveChangesAsync(); 
-            }
-            catch(Exception err)
-            {
-                _logger.LogError(err, "Error occur when create item");
-            }
-        }
+            DateTime  now = DateTime.UtcNow.AddHours(7);
+            var fromD = new DateTime(now.Year, now.Month, 1, 0, 0, 0, 0);
+            var toD = new DateTime(now.Year, now.Month, DateTime.DaysInMonth(now.Year, now.Month), 23, 59, 59, 999);
 
-        [HttpGet("invent")]
-        public async Task<IActionResult> Inventory()
-        {
-            var userDto = new UserDto 
-            { 
-                DepId = User.FindFirst(JwtClaimConstant.UserId)?.Value,
-                RoleName = User.FindFirst(JwtClaimConstant.Role)?.Value
-            };
+            return Ok(await _actionService.GetInventAsync(new Guid(userId), roleName, fromD, toD))
+       }
 
-            var fileName = $"Item{DateTime.UtcNow.AddHours(7).ToString("yyyyMMdd")}.xlsx";
-            byte[] fileData = await _fileService.ExportItemAsync(userDto);
+       [Authorize]
+       [HttpGet("invent/condition")]
+       public async Task<IActionResult> GetInventWithCondition([FromQuery] InventConditionDto dto) {
+            var userId = User.FindFirst(JwtClainConstant.UserId)?.Value!;
+            var roleName = User.FindFirst(JwtClaimConstant.Role)?.Value!;
 
-            return File(fileData, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
-        }
+            //Convert string to Date
+            dto.fromD = new DateTime(dto.fromD.Year, dto.fromD.Month, dto.fromD.Day, 0, 0, 0, 0);
+            dto.toD = new DateTime(dto.toD.Year, dto.toD.Month, dto.toD.Day, 23, 59, 59, 999);
 
-        [HttpGet("invent/condition")]
-        public async Task<IActionResult> InventoryWithCondition([FromQuery] InventDto dto)
-        {
-            var fromUtc = dto.fromD.UtcDateTime;
-            var toUtc = dto.toD.UtcDateTime;
+            return Ok(await _actionService.GetInventAsync(new Guid(userId), roleName, dto.fromD, dto.toD))
+       }
 
-            return Ok();
-        }
+       [Authorize]
+       [HttpPost("invent/export")]
+       public async Task<IActionResult> ExportFileInvent([FromBody] List<InventDto> dto) {
+           var fileName = "Report.xlsx";
+           var data = await _fileService.ExportFileInventAsync(dto);
+
+           return File(data, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
+       }
+
+       [Authorize]
+       [HttpGet("history")]
+       public async Task<IActionResult> GetHistory() {
+           var userId = User.FindFirst(JwtClaimConstant.UserId)?.Value!;
+           var roleName = User.FindFirst(JwtClaimConstant.Role)?.Value!;
+
+           return Ok(await _actionService.GetHistoryAsync(new Guid(userId), roleName));
+       }
+
+       [Authorize]
+       [HttpPost("history/export")]
+       public async Task<IActionResult> ExportFileHistory([FromBody] List<HistoryDto> dto) {
+           var fileName = "history.xlsx";
+           var data = await _fileService.ExportFileHistoryAsync(dto);
+
+           return File(data, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
+       }
     }
 }
