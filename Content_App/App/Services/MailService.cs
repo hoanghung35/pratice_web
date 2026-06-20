@@ -43,7 +43,7 @@ namespace Content_App.App.Services
 
                     using (HttpClient client = new HttpClient())
                     {
-                        string url = "http://10.16.1.32:5109/api";
+                        string url = "http://10.16.1.32:5109/api/Email/init";
                         var option = new JsonSerializerOptions()
                         {
                             WriteIndented = true
@@ -93,6 +93,37 @@ namespace Content_App.App.Services
             mailmsg.Priority = MailPriority.Normal;
 
             return mailmsg;
+        }
+
+        public string ContentInit(string? fullName, string userCode, string dataAttack, string typeEmail, bool? isOk)
+        {
+            var content = "";
+
+            switch(typeEmail)
+            {
+                case "reset":
+                    {
+                        content = $@"Dear Mr./Ms. {fullName}, </br></br>
+                        We would like to inform your account information to access {VariableConstant.HostName} as below: </br>
+                        - Account: <b style='color:red'>{userCode}</b></br>
+                        - Password: <b style='color:red'>{dataAcctack}</b></br></br>
+                        <b>Goto Website: {VariableConstant.pathWebsite}</b></br></br>
+                        <b style='color:red'>This is auto email, please do not reply!. Thank you!</b>";
+
+                        break;
+                    }
+                case "createAccount":
+                    {
+                        content = $@"Dear Mr./Ms. {fullName}, </br></br>
+                        We would like to inform your account information to access {VariableConstant.HostName} as below: </br>
+                        - Account: <b style='color:red'>{userCode}</b></br>
+                        - Password: <b style='color:red'>{dataAcctack}</b></br></br>
+                        <b>Goto Website: {VariableConstant.pathWebsite}</b></br></br>
+                        <b style='color:red'>This is auto email, please do not reply!. Thank you!</b>";
+                    }
+            }
+
+            return content;
         }
     }
 }
