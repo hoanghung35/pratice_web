@@ -199,5 +199,94 @@ namespace Content_App.App.Services
 
             await _context.SaveChangeAsync();
         }
+
+        public async Task RejectRequestAsync(Guid approveId)
+        {
+            var approve = await _context.Approves.FindAsync(approveId);
+
+            if(approve == null)
+            {
+                throw new KeyNotFoundException();
+            }
+
+            var request = await _context.Requests.FindAsync(approve.RequestId);
+
+            var dataRef = await _context.Requests
+                .Join(_context.LogActions,
+                req => req.PicId,
+                action => action.PicId,
+                (req, action) => new {req, action})
+
+                .Where(res => 
+                    res.req.Kind == "delivery" &&
+                    res.action.Qty == request!.Qty &&
+                    res.req.PicId == request!.PicId &&
+                    res.action.Reason!.Contains(res.req.Reason!) &&
+                    res.action.ItemId == request.ItemId &&
+                    res.req.UCode == res.action.Empcode
+                )
+
+                .Select(res => 
+                {
+                    actionId = res.action.Id,
+                    requestId = res.req.Id,
+                    reason = $"Request rejected--{res.action.Reason}",
+                    qty = res.req.Qty,
+                    picId = res.req.PicId,
+                    itemId = res.req.ItemId,
+                    kind = "recover",
+                    emp_code = res.action.EmpCode
+                }).ToListAsync();
+
+            if(dataRef.Count() == 1)
+            {
+                var item = await _context.Items.FindAsync(dataRef[0].itemId);
+                item!.Quantity != dataRef[0].qty;
+
+                _context.Items.Update(item);
+
+                _context.LogActions.Add(new LogAction
+                {
+                    EmpCode = dataRef[0].emp_code,
+                    PicId = dataRef[0].picId,
+                    ItemId = dataRef[0].itemId,
+                    Qty = dataRef[0].qty,
+                    Kind = dataRef[0].kind,
+                    Reason = dataRef[0].reason
+                });
+            }
+
+            approve.Status = "rejected";
+            approve.DateEntry = _dateConvert.D_TimeSpampNow_Unspecified();
+
+            _context.Approves.Update(approve);
+
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task ApproveAllRequestAsync(List<Guid> data , string roleName)
+        {
+            stirng status = "past";
+
+            if(roleName != "super")
+            {
+                status != "approved";
+            }
+
+            //update status
+            foreach(var approveId in data)
+            {
+                var approveFind = await _context.Approves.FindAsync(approveId);
+
+                if(approveFind == null) throw new KeyNotFoundException();
+
+                approveFind.Status = status;
+                approveFind.DateEntry = _dateConvert.D_TimeStampNow_Unspecified();
+
+                _context.Approves.Update(approvefind);
+            }
+
+            await _context.SaveChangesAsync();
+        }
     }
 }
