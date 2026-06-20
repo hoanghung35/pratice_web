@@ -13,7 +13,7 @@ namespace Content_App.App.Services
     {
         private readonly IAuthService _authService;
         private readonly LogDbContext _context;
-        private PasswordHasher _hash;
+        private readonly PasswordHasher _hash;
         private readonly RefreshTokenStore _refeshToken;
 
         
@@ -47,10 +47,10 @@ namespace Content_App.App.Services
             _refeshToken.Revoke(refreshToken);
             var account = await _context.Accounts.Include(a => a.Role).FirstOrDefaultAsync(a => a.Id == userId);
 
-            return GenerateTokens(account);
+            return GenerateTokens(account!);
         }
 
-        public async Task<string> ResetPasswordAsync(ResetPasswordDto dto)
+        public async Task<string> ForgetPasswordAsync(ForgetPasswordDto dto)
         {
             var user = await _context.Employees.FirstOrDefaultAsync(u => u.EmpCode == dto.UserCode && u.Email == dto.Email);
             var account = await _context.Accounts.FirstOrDefaultAsync(a => a.UserCode == dto.UserCode);
@@ -66,7 +66,7 @@ namespace Content_App.App.Services
 
             await _context.SaveChangesAsync();
 
-            return newPw;
+            return $"{newPw}|{user.Email}|{user.FullName}";
         }
 
         //logout
