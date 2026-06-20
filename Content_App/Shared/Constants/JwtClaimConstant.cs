@@ -6,5 +6,7 @@
         public const string Role = "rolename";
         public const string UserId = "userid";
         public const string RoleId = "roleid";
+        public const string PicId = "picid";
+        public const string Email = "user_email";
     }
 }
