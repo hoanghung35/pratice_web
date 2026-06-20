@@ -1,19 +1,24 @@
 ﻿using Content_App.App.DTOs.Item;
 using Content_App.Domain.Entities;
 using Content_App.Infrastructure.Data;
+using Content_App.Shared.Constants;
+using Content_App.Shated.DatePipe;
 using Microsoft.EntityFrameworkCore;
-using System.Linq.Expressions;
-using System.Xml;
+using OfficeOpenXml;
 
 namespace Content_App.App.Services
 {
     public class ItemService
     {
         private readonly LogDbContext _context;
+        private readonly ActionService _actionService;
+        private readonly DateConverter _dateConvert;
         
-        public ItemService(LogDbContext context)
+        public ItemService(LogDbContext context, ActionService actionService, DateConverter dateConvert)
         {
             this._context = context;
+            this._actionService = actionService;
+            this._dateConvert = dateConvert;
         }
 
         public async Task<List<Item>> GetAllAsync()
