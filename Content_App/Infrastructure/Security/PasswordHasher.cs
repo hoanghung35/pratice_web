@@ -18,5 +18,12 @@ namespace Content_App.Infrastructure.Security
         {
             return SHA_256Hasher(login_pw) == password;
         }
+
+        public string RandomPassword()
+        {
+            return new string(Enumerable.Repeat(VariableConstant.VariableConstant, 5)
+            .Select(s => s[Random.Shared.Next(s.Length)])
+            .ToArray());
+        }
     }
 }
