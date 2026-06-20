@@ -34,10 +34,13 @@ builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<ActionService>();
 builder.Services.AddScoped<ItemService>();
 builder.Services.AddScoped<MailService>();
-builder.Services.AddScoped<OrderService>();
+builder.Services.AddScoped<RequestService>();
 builder.Services.AddScoped<ApproveService>();
 builder.Services.AddScoped<PasswordHasher>();
 builder.Services.AddScoped<RefreshTokenStore>();
+buidder.Services.AddScoped<AccountService>();
+builder.Services.AddScoped<FileService>();
+builder.Service.AddScoped<DateConverter>();
 builder.Services.AddScoped<IAuthService, JwtService>();
 
 //Db context
@@ -46,7 +49,14 @@ builder.Services.AddDbContext<LogDbContext>(option => option.UseNpgsql(connectio
 builder.Services.AddHttpClient();
 
 //Jwt config
-builder.Services.AddAuthentication().AddJwtBearer(options =>
+builder.Services.AddAuthentication(options => 
+{
+    options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+    options.DefaultAuthenticationScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(options =>
 {
     options.TokenValidationParameters = new TokenValidationParameters
     {
