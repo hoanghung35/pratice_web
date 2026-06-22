@@ -9,7 +9,7 @@ export class OrderService {
 
   constructor(private http: HttpClient) { }
 
-  getOrder() {
-    return this.http.get<Order>('http://localhost:5251/api/orders');
+  getRequest(): Observable<Request[]> {
+    return this.http.get<Request>(`${apiUrl}/request`);
   }
 }
