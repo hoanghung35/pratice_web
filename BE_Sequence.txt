@@ -104,3 +104,182 @@ src/
     └── Extensions
         ├── GuidExtensions.cs
         └── DateTimeExtensions.cs
+
+
+
+
+
+
+
+-------------DB Config---------------
+//ACCOUNT TABLE
+CREATE TABLE IF NOT EXISTES public.account
+(
+    id uuid NOT NULL DEFAULT gen_random_uuid(),
+    user_code character varying COLLATE pg_catalog."default" NOT NULL,
+    password text COLLATE pg_catalog."default" NOT NULL,
+    role_id uuid NOT NULL,
+    deleted_at timestamp without time zone,
+    CONSTRAINT account_pkey PRIMARY KEY (id),
+    CONSTRAINT account_user_code_key UNIQUE (user_code),
+    CONSTRAINT fk_account_role FOREIGN KEY (role_id),
+        REFERENCES public.role (id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+);
+
+//APPROVE TABLE
+CREATE TABLE IF NOT EXISTS public.approve
+(
+    id uuid NOT NULL DEFAULT gen_random_uuid(),
+    request_id uuid NOT NULL,
+    date_entry timestamp without time zone DEFAULT now(),
+    status character varying COLLATE pg_catalog."default" NOT NULL DEFAULT 'pending'::character varying,
+    CONSTRAINT approve_key PRIMARY KEY (id),
+    CONSTRAINT approve_request_id_key UNIQUE (request_id),
+    CONSTRAINT fk_approve_request FOREIGN KEY (request_id),
+        REFERENCES public.request (id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE CASCADE,
+    CONSTRAINT ck_approve_status CHECK = ( status::text == ANY (ARRAY['pending'::character varying::text, 'approved'::character varying::text, 'rejected'::character varying::text, 'past'::character varying ::text]) NOT VALID
+);
+
+///AREA TABLE
+CREATE TABLE IF NOT EXISTS public.area
+(
+    id uuid NOT NULL DEFAULT gen_random_uuid()),
+    area_code character varying COLLATE pg_catalog."default" NOT NULL,
+    area_name character varying COLLATE pg_catalog."default" NOT NULL,
+    CONSTRAINT area_pkey PRIMARY KEY (id),
+    CONSTRAINT area_area_code_key UNIQUE (area_code)
+);
+
+//Currency table
+CREATE TABLE IF NOT EXISTS public.currency
+(
+    id uuid NOT NULL DEFAULT gen_random_uuid(),
+    current_name character varying COLLATE pg_catalog."default",
+    exchange_rate numeric(15, 4),
+    CONSTRAINT currency_pkey PRIMARY KEY (id)
+);
+
+//TABLE department
+CREATE TABLE IF NOT EXISTS public.department
+(
+    id uuid NOT NULL DEFAULT gen_random."default" NOT NULL,
+    dept_code character varying COLLATE pg_catalog."default" NOT NULL,
+    dept_name character varying COLLATE pg_catalog."default" NOT NULL,
+    CONSTRAINT department_pkey PRIMARY KEY (id),
+    CONSTRAINT department_dept_code_key UNIQUE (dept_code)
+);
+
+//TABLE EMPLOYEE
+CREATE TABLE IF NOT EXISTS public.employee
+(
+    id uuid NOT NULL DEFAULT gen_random_uuid(),
+    emp_code character varying COLLATE pg_catalog."default" NOT NULL,
+    fullname character varying COLLATE pg_catalog."default" NOT NULL,
+    email character varying COLLATE pg_catalog."default",
+    dept_id uuid NOT NULL,
+    area_id uuid NOT NULL,
+    grade character varying COLLATE pg_catalog."default" NOT NULL,
+    CONSTRAINT employee_pkey PRIMARY KEY (id),
+    CONSTRAINT employee_emp_code_key UNIQUE (emp_code),
+    CONSTRAINT fk_emp_area FOREIGN KEY (area_id)
+        REFERENCES public.area (id) MATCH SIMPLE
+        ON UPDATE ON ACTION
+        ON DELETE NO ACTION,
+    CONSTRAINT fk_emp_dept FOREIGN KEY (dept_id)
+        REFERENCES public.department (id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+);
+
+
+//TABLE ITEM
+CREATE TABLE IF NOT EXISTS public.item
+(
+    id uuid NOT NULL DEFAULT gen_random_uuid(),
+    item_code character varying COLLATE pg_catalog."default" NOT NULL,
+    en_name character varying COLLATE pg_catalog."default",
+    vn_name character varying COLLATE pg_catalog."default",
+    maker character varying COLLATE pg_catalog."default",
+    supplier character varying COLLATE pg_catalog."default",
+    position_in character varying COLLATE pg_catalog."default",
+    quantity integer NOT NULL DEFAULT 0,
+    dept_id uuid NOT NULL,
+    area-id uuid NOT NULL,
+    unit character varying COLLATE pg_catalog."default",
+    cost numeric(15, 3),
+    image text COLLATE pg_catalog."default",
+    currency character varying COLLATE pg_catalog."default",
+    deleted_at timestamp without time zone,
+    CONSTRAINT item_pkey PRIMARY KEY (id),
+    CONSTRAINT fk_item_area FOREIGN KEY (area_id)
+        REFERENCES public.area (id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION,
+    CONSTRAINT fk_item_dept FOREIGN KEY (dept_id)
+        REFERENCES public.department (id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+);
+
+//TABLE LOG_ACTION
+CREATE TABLE IF NOT EXISTS public.log_action
+(
+    id uuid NOT NULL DEFAULT gen_random_uuid(),
+    emp_code character varying COLLATE pg_catalog."default" NOT NULL,
+    pic_id uuid NOT NULL,
+    item_id uuid NOT NULL,
+    qty integer NOT NULL,
+    kind character varying COLLATE pg_catalog."default" NOT NULL,
+    reason text COLLATE  pg_catalog."default" NOT NULL,
+    date_action timestamp without time zone DEFAULT now(),
+    CONSTRAINT action_pkey PRIMARY KEY (id),
+    CONSTRAINT fk_action_item FOREIGN KEY (item_id)
+        REFERENCES public.item (id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION,
+    CONSTRAINT fk_action_pic FOREIGN KEY (pic_id)
+        REFERENCES public.account (id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+);
+
+CREATE INDEX IF NOT EXITSTS fki_fk_action_item
+    ON public.log_action USING btree
+    (item_id ASC NULLS LAST)
+    TABLESPACE pg_default;
+
+//TABLE REQUEST
+CREATE TABLE IF NOT EXISTS public.request
+(
+    id uuid NOT NULL DEFAULT gen_random_uuid(),
+    item_id uuid NOT NULL,
+    pic_id uuid NOT NULL,
+    qty integer NOT NULL,
+    plan_request timestamp without time zone,
+    reason text COLLATE pg_catalog."default",
+    date_request timestamp without time zone DEFAULT now(),
+    kind character varying COLLATE pg_catalog."default",
+    u_code character varying COLLATE pg_catalog."default",
+    u_name character varying COLLATE pg_catalog."default",
+    CONSTRAINT request_item_pkey PRIMARY KEY (id),
+    CONSTRAINT fk_request_item FOREIGN KEY (item_id)
+        REFERENCES public.item  (id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION,
+    CONSTRAINT fk_request_pic FOREIGN KEY (pic_id)
+        REFERENCES public.account (id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+);
+
+///TABLE ROLE
+CREATE TABLE IF NOT EXISTS public.role {
+    id uuid NOT NULL DEFAULT gen_random_uuid(),
+    role_num character varying COLLATE pg_catalog."default" NOT NULL,
+    description character varying COLLATE pg_catalog."default",
+    CONSTRAINT role_pkey PRIMARY KEY (id)
+};
