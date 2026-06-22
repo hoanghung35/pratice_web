@@ -1,9 +1,13 @@
 import { NgModule } from "@angular/core";
 import { AuthService } from "./services/auth.service";
-import { UserService } from "./services/user.service";
+import { AccountService } from "./services/account.service";
 import { ItemService } from "./services/item.service";
-import { OrderService } from "./services/order.service";
+import { RequestService } from "./services/request.service";
 import { ApproveService } from "./services/approve.service";
+import { InventService } from "./services/invent.service";
+import { LoadingService } from "./services/loading.service";
+import { DialogService } from "./services/dialog.service";
+import { CurrencyService } from "./services/currency.service";
 import { HTTP_INTERCEPTORS } from "@angular/common/http";
 import { JwtCookieInterceptor } from "./interceptors/jwt-cookie.interceptor";
 import { ErrorInterceptor } from "./interceptors/error.interceptor";
@@ -11,10 +15,14 @@ import { ErrorInterceptor } from "./interceptors/error.interceptor";
 @NgModule({
     providers: [
         AuthService,
-        UserService,
+        AccountService,
         ItemService,
-        OrderService,
+        RequestService,
         ApproveService,
+        InventService,
+        CurrencyService,
+        DialogService,
+        LoadingService,
         {
             provide: HTTP_INTERCEPTORS,
             useClass: JwtCookieInterceptor,
