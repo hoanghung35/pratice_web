@@ -126,12 +126,31 @@ builder.Services.AddAuthorization(options =>
         });
     });
 
+    options.AddPolicy("gm", policy => 
+    {
+       policy.RequireAssertion(ctx =>
+        {
+            return ctx.User.Identity.IsAuthenticated && Enum.Parse<RoleKey>(ctx.User.FindFirst(JwtClaimConstant.Role)!.Value) == RoleKey.general_manager;
+        });
+    });
+
     options.AddPolicy("CanCreate", policy =>
     {
         policy.RequireAssertion(ctx =>
         {
             return ctx.User.Identity.IsAuthenticated && Enum.Parse<RoleKey>(ctx.User.FindFirst(JwtClaimConstant.Role)!.Value) == RoleKey.dev ||
             Enum.Parse<RoleKey>(ctx.User.FindFirst(JwtClaimConstant.Role)!.Value) == RoleKey.admin;
+        });
+    });
+
+    options.AddPolicy("CanApproval", policy => 
+    {
+        policy.RequireAssertion(ctx => 
+        {
+            return ctx.User.Identity.IsAuthenticated && Enum.Parse<RoleKey>(ctx.User.FindFirst(JwtClaimConstant.Role)!.Value) == RoleKey.general_manager ||
+                Enum.Parse<RoleKey>(ctx.User.FindFirst(JwtClaimConstant.Role)!.Value) == RoleKey.dev ||
+                Enum.Parse<RoleKey>(ctx.User.FindFirst(JwtClaimConstant.Role)!.Value) == RoleKey.super ||
+                Enum.Parse<RoleKey>(ctx.User.FindFirst(JwtClaimConstant.Role)!.Value) == RoleKey.manager;
         });
     });
 });
