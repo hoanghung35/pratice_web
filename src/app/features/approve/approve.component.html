@@ -1,1 +1,26 @@
-<p>approve works!</p>
+<ng-template #action let-approve>
+    <div class="action-btn-box">
+        @if(approve.status != 'Wait Mgr Approve' && roleName == 'super' || roleName != 'super'){
+            <button class="action-btn btn-reject" matButton="elevated" matTooltip="Reject" (click)="reject(approve.id)">
+                <mat-icon>cancel</mat-icon>
+            </button>
+
+            <button class="action-btn btn-approve" matButton="elevated" matTooltip="Approve" (click)="approveRequest(approve.id)">
+                <mat-icon>check_circle_outline</mat-icon>
+            </button>
+        }
+    </div>
+</ng-template>
+
+<div class="header-title">
+    <h1>APPROVE</h1>
+</div>
+
+<div class="approve-tools">
+    <button class="btn-action approve" (click)="approveAll()" [disabled]="isShow">
+        <span>Approve All</span>
+        <mat-icon>check_circle_outline</mat-icon>
+    </button>
+</div>
+
+<app-table [columns]="columns" [data]="approves"></app-table>
