@@ -52,7 +52,7 @@ export class AuthService {
       .pipe(tap(u => this._user.next(u)));
   }
 
-  getMe(force = false): Observable<UserInfo | null> {
+  getInfor(force = false): Observable<UserInfo | null> {
     if (!force && this._user.value) {
       return of(this._user.value);
     }
@@ -73,5 +73,13 @@ export class AuthService {
 
   get role(): string | null {
     return this._user.value?.role ?? null;
+  }
+
+  get name(): string | null {
+    return this._user.value?.username ?? null;
+  }
+
+  get email(): string | null {
+    return this._user.contact ?? null ;
   }
 }
