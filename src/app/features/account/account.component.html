@@ -1,0 +1,25 @@
+<div class="header-title">
+    <h2>ACCOUNT</h2>
+</div>
+
+<div class="btm-add-user">
+    <button class="add-user-btn" matButton="elevated" (click)="addAccount()">
+        <span>
+            <mat-icon>add_circle_outline</mat-icon>Add
+        </span>
+    </button>
+</div>
+
+<ng-template #action let-account>
+    <div class="action-btn-box">
+        <button matButton="elevated" matTooltip="Delete Account" class="action-btn btn-delete" (click)="deleteAccount(account.id)">
+            <mat-icon>delete_forever</mat-icon>
+        </button>
+
+        <button matButton="elevated" matTooltip="Reset Password" class="action-btn btn-delete" (click)="resetAccount(account.id)">
+            <mat-icon>Loop</mat-icon>
+        </button>
+    </div>
+</ng-template>
+
+<app-table [columns]="columns" [data]="accounts"></app-table>
