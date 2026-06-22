@@ -22,8 +22,8 @@ export class ErrorInterceptor implements HttpInterceptor {
                     );
                 }
 
-                if (err.status === 403) {
-                    this.router.navigate(['/403']);
+                if (err.status === 403 || err.status === 404) {
+                    this.router.navigate(['/page-error']);
                 }
 
                 return throwError(() => err);
