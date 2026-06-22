@@ -1,0 +1,57 @@
+.account-create-container {
+    width: 100%;
+}
+
+.account-create-container .account-create-header {
+    background-color: #087064;
+    color: #ffff;
+    position:relative;
+    height: 3.75rem;
+    text-align: center;
+}
+
+.account-create-container .account-create-content {
+    padding: 1.14rem 1.25rem 0 1.25rem;
+    font-size: 16px;
+}
+
+.account-create-container button {
+    border-style: none;
+}
+
+.account-create-container .account-create-actions {
+    display: flex;
+    justify-content: center;
+    gap: 5rem;
+}
+
+.account-create-container .account-create-actions .detail-btn-action {
+    height: 2.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 5rem;
+    border-radius: 2rem;
+    box-shadow: 0 0 10px rgba(142, 121, 121, 0.3);
+    color: #ffff;
+}
+
+.account-create-input .form-row .full-width {
+    width: 20rem;
+}
+
+.account-create-input .form-row .full-width input {
+    background: inherit;
+}
+
+.account-create-actions .detail-btn-action.create {
+    background-color: #198754;
+}
+
+.account-create-actions .detail-btn-action.account-create-close {
+    background-color: #dc3545;
+}
+
+.mat-divider {
+    border-top-color: #aab0c1 !important;
+}
