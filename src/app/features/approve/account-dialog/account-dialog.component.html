@@ -1,0 +1,70 @@
+<div class="account-create-container">
+    <h2 mat-dialog-title class="account-create-header">Create New Account</h2>
+
+    <mat-dialog-content class="account-create-content">
+        <div class="account-create-input">
+
+            <div class="form-row">
+                <mat-form-field appearance="fill" class="full-width">
+                    <mat-label>*User Code</mat-label>
+                    <input type="text" class="userCode" [(ngModel)]="userCode" (change)="onChangeInput($event, 0)">
+                </mat-form-field>
+
+                <mat-form-field appearance="fill" class="full-width">
+                    <mat-label>*Full Name</mat-label>
+                    <input type="text" class="fullName" [(ngModel)]="fullName" (change)="onChangeInput($event, 1)">
+                </mat-form-field>
+            </div>
+
+            <div class="form-row">
+                <mat-form-field appearance="fill" class="full-width">
+                    <mat-label>*Email</mat-label>
+                    <input type="text" class="email" [(ngModel)]="email" (change)="onChangeInput($event, 2)">
+                </mat-form-field>
+
+                <mat-form-field appearance="fill" class="full-width">
+                    <mat-label>*Role</mat-label>
+                    <mat-select [(ngModel)]="role">
+                        <mat-option>None</mat-option>
+                        <mat-option value="gm">GM</mat-option>
+                        <mat-option value="mgr">Mgr</mat-option>
+                        <mat-option value="super">Super</mat-option>
+                        <mat-option value="admin">Admin</mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+
+            <div class="form-row">
+                <mat-form-field appearance="fill" class="full-width">
+                    <mat-label>*Department</mat-label>
+                    <mat-select [(ngModel)]="dept">
+                        <mat-select>None</mat-select>
+                        <mat-select value="TL">Thang Long</mat-select>
+                        <mat-select value="QV">Que Vo</mat-select>
+                        <mat-select value="TS">Tien Son</mat-select>
+                    </mat-select>
+                </mat-form-field>
+
+                <mat-form-field appearance="fill" class="full-width">
+                    <mat-label>*Area</mat-label>
+                    <mat-select [(ngModel)]="area">
+                        <mat-option>None</mat-option>
+                        <mat-option value="office">Office</mat-option>
+                        <mat-option value="auto">Auto</mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+
+        </div>
+
+        @if(!detectError() && isShow) {
+            <mat-error>{{message}}</mat-error>
+        }
+    </mat-dialog-content>
+
+    <mat-divider></mat-divider>
+    <mat-dialog-actions class="account-create-actions">
+        <button class="detail-btn-action create" matButton (click)="create()">Create</button>
+        <button class="detail-btn-action account-create-close" matButton mat-dialog-close>Cancel</button>
+    </mat-dialog-actions>
+</div>
