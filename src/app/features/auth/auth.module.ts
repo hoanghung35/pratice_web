@@ -1,17 +1,15 @@
-import { Injectable } from "@angular/core";
-import { AuthService } from "../../core/services/auth.service";
-import { Router } from "@angular/router";
+import { NgModule } from '@angular/core';
+import { LoginComponent } from './login/login.component';
+import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router'
 
+@NgModule({
+  imports: [
+    CommonMoudle,
+    RouterModule.forChild([
+      {path: '', component: LoginComponent}
+    ])
+  ]
+})
 
-
-@Injectable({ providedIn: 'root' })
-export class AuthModule {
-    constructor(private auth: AuthService, private router: Router) { }
-
-    logout() {
-        this.auth.logout().subscribe(() => {
-            this.router.navigate(['/login']);
-        });
-
-    }
-}
+  export class AuthModule {}
