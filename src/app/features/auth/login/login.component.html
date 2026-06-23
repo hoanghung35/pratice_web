@@ -1,21 +1,45 @@
 <div class="login-container">
-    <form [formGroup]="loginForm" (ngSubmit)="login()">
-        <h2>Đăng Nhập</h2>
+    <div class="login-box">
 
-        <div class="form-group">
-            <label for="username">UserCode:</label>
-            <input id="username" type="text" formControlName="usercode">
+        <div class="login-panel panel-left">
+            <div>
+                <h1>Welcome Back!</h1>
+                <p>Don't have an account? Contact to Admin</p>
 
-        </div>
-
-        <div class="form-group">
-            <label for="password">Mật khẩu:</label>
-            <input id="password" type="password" formControlName="password">
-            <div *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched" class="error">
-                Mật khẩu phải có ít nhất 3 ký tự.
+                <button id="login-forgot" type="button" matButton="elevated" (click)="resetPasswordDialog()">
+                    <span>Forgot password?</span>
+                </button>
             </div>
         </div>
 
-        <button type="submit" [disabled]="loginForm.invalid">Đăng nhập</button>
-    </form>
+        <div class="login-panel panel-right">
+            <form class="login-form" [formGroup]="'formData" (ngSubmit)="login(formData.value)">
+
+                <div class="login-form-title">
+                    <h1 class="sys-name">ITEM SHOP CONTROL</h1>
+                    <h4>Sign into your account</h4>
+                </div>
+
+                <mat-form-field class="login-form-input">
+                    <mat-label>User Name</mat-label>
+                    <input type="text" id="username" matInput formControlName="username" placeholder="Eg: 123456">
+                </mat-form-field>
+
+                <mat-form-field class="login-form-input">
+                    <mat-label>Password</mat-label>
+                    <input type="password" id="password" matInput formControlName="password">
+                </mat-form-field>
+
+                <button class="login-button" type="submit" matButton="elevated">Login</button>
+            </form>
+
+            <div class="contact-infor">
+                <b>@ 2026 - Development by Felix Hoang.</b>
+                <br>
+                <p>Contact information: abc@123</p>
+            </div>
+        </div>
+    </div>
 </div>
+
+<router-outlet></router-outlet>
