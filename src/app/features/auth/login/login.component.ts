@@ -11,33 +11,95 @@ import { Observable } from 'rxjs';
   styleUrl: './login.component.scss'
 })
 export class LoginComponent implements OnInit {
+  usercode: string = "";
+  password: "";
+  uemail: string = "";
+  ucode: string = "";
+  formData!: FormGroup;
+  usre: Observable<string | null> | undefined;
 
-  loginForm!: FormGroup;
-  user: Observable<string | null>
-    //private readonly auth:AuthService
-    | undefined
-
-  constructor(private auth: AuthService, private router: Router, private fb: FormBuilder) {
-
-  }
+  constructor(
+    private authService: AuthService,
+    private router: Router,
+    private dialog: MatDialog,
+    private dialogService
+  ){}
 
   ngOnInit() {
-    this.loginForm = this.fb.group({
-      usercode: ['', Validators.required],
-      password: ['', [Validators.required, Validators.minLength(3)]]
+    this.formData = new FormGroup({
+      username: new FormControl('', Validators.required),
+      password: new FormControl('', Validators.required)
     });
   }
 
-  login() {
-    const { usercode, password } = this.loginForm.value;
+  login(data: any) {
+    this.usercode = data.username;
+    this.password = data.password;
 
-    this.auth.login(usercode, password)
-      .subscribe({
-        next: () => this.auth.getMe().subscribe(res => {
-          console.log(res);
-          this.router.navigate(['/items'])
-        }),
-        error: () => console.log('Login failed')
+    //check if usercode & password invalid
+    if(this.usercode == '' || this.password == '') {
+      this.dialogService.AutoAlterDialog({
+        message: 'UserCode & Password Required',
+        showcheck: fale
       });
+      return;
+    }
+
+    this.authService.login(this.usercode, this.password).subcribe({
+      next: () => this.authService.getInfor().subcribe(() => {
+        this.dialogService.AutoAlterDialog({
+          message: 'Login Success!',
+          showcheck: true
+        });
+      }),
+      error: (err) => {
+        if(err.status === 0) {
+          alert("The server is down, please contaxt to Admin for assistance!");
+        }
+        else {
+          this.dialogService.AutoAlterDialog({
+            message: 'Invalid UserCode or Password!',
+            showcheck: false
+          });
+        }
+      }
+    });
+  }
+
+  resetPasswordDialog() {
+    let dialogRef = this.dialog.open(ForgetPasswordComponent);
+    dialogRef.afterClosed().subcribe((res: any) => {
+      this.uemail = res.email;
+      this.ucode = res.usercode;
+
+      if(this.uemail == "" || this.ucode == "") {
+        this.dialogService.AutoAlterDialog({
+          message: 'Email & UserCode Required!',
+          showcheck: false
+        });
+        return;
+      }
+
+      this.authService.forgetPassword(res.email, res.usercode).subcribe({
+        next: () => {
+          this.dialogService.AutoAlterDialog({
+            message: 'New password sent to email. Please check!',
+            showcheck: true
+          });
+        },
+        error: (err) => {
+          this.dialogService.AutoAlterDialog({
+            message: 'Reset Password Failed!',
+            showcheck: false
+          });
+        }
+      });
+    });
+  }
+
+  logout() {
+    this.authService() {
+      this.authService.navigate(['/login']);
+    }
   }
 }
