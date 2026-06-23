@@ -1,79 +1,94 @@
+@import '../../../../styles.scss';
+
 .login-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: inherit;
+    overflow: hidden;
+    width: 100%;
+    height: 100%;
 }
 
-.login-form {
-    background: white;
-    padding: 40px;
-    border-radius: 10px;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+.login-box {
+    background-color: $bg-color-default;
+    max-width: 1000px;
+    min-height: 500px;
+    box-sizing: border-box;
+    display: flex;
+    position: relative;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 18px;
+    box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.1), 0 5px 5px 0 rgba(0, 0, 0, .24);
+}
+
+.login-panel {
+    width: 50%;
+    padding: 20;
+    border: none;
+}
+
+.login-box .login-panel.panel-left {
+    border-radius: 15px 80px 60pc 15px;
+    background-color: $bg-color-gradient;
+    color: $text-color-default;
+    text-align: center;
+    font-weight: $font-weitht-medium;
+}
+
+.login-box .login-panel.panel-left>div {
+    position: relative;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.login-box .login-panel.panel-left div > button {
+    border: none;
+    border-radius: 12px;
+    height: 40px;
+    color: $text-color-link;
+}
+
+.sys-name {
+    color: $color-succcess;
+    padding-bottom: 15px;
+}
+
+.login-box .login-panel.panel-right .login-form {
+    display: flex;
+    flex-direction: column;
+}
+
+.login-error {
+    color: $text-color-fail;
+    padding-bottom: 10px;
+    margin: 0;
+}
+
+.login-button {
+    border-radius: 15px;
+    border: none;
+    height: 35px;
     width: 100%;
-    max-width: 400px;
+    background-color: $color-success;
+    margin: auto;
+    color: $text-color-default;
+    font-weight: $font-weight-medium;
+}
 
-    h2 {
-        text-align: center;
-        color: #333;
-        margin-bottom: 30px;
-        font-size: 28px;
-    }
+.login-buttom:hover {
+    scale: 1.005;
+    background-color: rgb(70, 118, 221);
+}
 
-    .form-group {
-        margin-bottom: 20px;
+.login-form-title {
+    text-align: center;
+    margin-bottom: 10px;
+}
 
-        label {
-            display: block;
-            margin-bottom: 8px;
-            color: #555;
-            font-weight: 500;
-        }
-
-        input {
-            width: 100%;
-            padding: 12px;
-            border: 2px solid #e0e0e0;
-            border-radius: 6px;
-            font-size: 16px;
-            transition: border-color 0.3s ease;
-
-            &:focus {
-                outline: none;
-                border-color: #667eea;
-                box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-            }
-        }
-    }
-
-    .login-btn {
-        width: 100%;
-        padding: 12px;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
-        border: none;
-        border-radius: 6px;
-        font-size: 16px;
-        font-weight: 600;
-        cursor: pointer;
-        transition: transform 0.2s ease, box-shadow 0.2s ease;
-
-        &:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
-        }
-
-        &:active {
-            transform: translateY(0);
-        }
-    }
-
-    .footer-text {
-        text-align: center;
-        margin-top: 20px;
-        color: #999;
-        font-size: 14px;
-    }
+.contact-infor {
+    text-align: center;
+    padding-top: 30px;
+    font-size: 17px;
+    font-weight: 400;
 }
