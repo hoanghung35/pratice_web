@@ -1,0 +1,27 @@
+<div class="header-title">
+    <h2>CURRENCY</h2>
+</div>
+
+<div class="btn-add-currency">
+    <button class="add-currency-btn" matButton="elevated" (click)="addCurrency()">
+        <span>
+            <mat-icon>add_circle_outline</mat-icon>Add
+        </span>
+    </button>
+</div>
+
+<ng-template #action let-currency>
+    <div class="action-btn-box">
+
+        <button class="action-btn btn-delete" matButton="elevated" (click)="deleteCurrency(currency.id)" matTooltip="Delete Currency">
+            <mat-icon>delete_forever</mat-icon>
+        </button>
+
+        <button class="action-btn btn-update" matButton="elevated" matTooltio="Update Currency" (click)="updateCurrency(currency.id)">
+            <mat-icon>border_color</mat-icon>
+        </button>
+
+    </div>
+</ng-template>
+
+<app-table [columns]="columns" [data]="currencies"></app-table>
