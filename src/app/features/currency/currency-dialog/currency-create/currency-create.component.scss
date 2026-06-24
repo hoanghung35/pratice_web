@@ -1,0 +1,60 @@
+.currency-create-container {
+    width: 100%;
+}
+
+.currency-create-container .currency-create-header {
+    background-color: #087064;
+    color: #ffff;
+    position: relative;
+    height: 3.75rem;
+    text-align: center;
+}
+
+.currency-create-container .currency-create-content {
+    padding: 1.25rem;
+    font-size: 16px;
+}
+
+.currency-create-container button {
+    border-style: none;
+}
+
+.currency-create-container .currency-create-actions {
+    display: flex;
+    justify-content: center;
+    gap: 5rem;
+}
+
+.currency-create-container .currency-create-actions :hover {
+    scale: 1.05;
+}
+
+.currency-create-container .currency-create-actions .currency-btn-action {
+    height: 2.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 5rem;
+    border-radius: 2rem;
+    box-shadow: 0 0 10px rgba(142, 121, 121, 0.3);
+    color: #ffff
+}
+
+.form-row {
+    display: flex;
+    justify-content: space-around;
+    gap: 5rem;
+    margin-top: 1.25rem;
+}
+
+.form-row .full-width {
+    width: 25rem;
+}
+
+.currency-create-actions .currency-btn-action.create {
+    background-color: #198754;
+}
+
+.currency-create-actions .currency-btn-action.close {
+    background-color: #dc3545;
+}
