@@ -1,0 +1,60 @@
+.currency-update-container {
+    width: 100%;
+}
+
+.currency-update-container .currency-update-header {
+    background-color: #087064;
+    color: #ffff;
+    position: relative;
+    height: 3.75rem;
+    text-align: center;
+}
+
+.currency-update-container .currency-update-content {
+    padding: 1.25rem;
+    font-size: 16px;
+}
+
+.currency-update-container button {
+    border-style: none;
+}
+
+.currency-update-container .currency-update-actions {
+    display: flex;
+    justify-content: center;
+    gap: 5rem;
+}
+
+.currency-update-container .currency-update-actions :hover {
+    scale: 1.05;
+}
+
+.currency-update-container .currency-update-actions .currency-btn-action {
+    height: 2.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 5rem;
+    border-radius: 2rem;
+    box-shadow: 0 0 10px rgba(142, 121, 121, 0.3);
+    color: #ffff
+}
+
+.form-row {
+    display: flex;
+    justify-content: space-around;
+    gap: 5rem;
+    margin-top: 1.25rem;
+}
+
+.form-row .full-width {
+    width: 25rem;
+}
+
+.currency-update-actions .currency-btn-action.update {
+    background-color: #198754;
+}
+
+.currency-update-actions .currency-btn-action.close {
+    background-color: #dc3545;
+}
