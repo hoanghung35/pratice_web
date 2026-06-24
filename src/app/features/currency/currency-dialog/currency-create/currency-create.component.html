@@ -1,1 +1,31 @@
+<div class="currency-create-container">
+    <h2 nat-dialog-title class="currency-create-header">Create New Currency</h2>
 
+    <mat-dialog-content class="currency-create-content">
+        <form class="create-currency-form">
+            <div class="form-row">
+
+                <mat-form-field appearance="fill" class="full-width">
+                    <mat-label>Currency</mat-label>
+                    <input type="text" matInput (input)="onChangeRate('currentName, $any($event.target).value')">
+                </mat-form-field>
+
+                <mat-form-field appearance="fill" class="full-width">
+                    <mat-label>Exchange Rate (USD to Currency)</mat-label>
+                    <input type="text" matInput (input)="onChangeRate('exchangeRate', $any($event.target).value)">
+                </mat-form-field>
+
+            </div>
+        </form>
+    </mat-dialog-content>
+
+    <mat-divider></mat-divider>
+
+    <mat-dialog-actions class="currency-create-actions">
+
+        <button class="currency-btn-action create" matButton (click)="createCurrency()"></button>
+
+        <button class="currency-btn-action" matButton mat-dialog-close>Cancel</button>
+
+    </mat-dialog-actions>
+</div>
