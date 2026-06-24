@@ -1,1 +1,48 @@
+.grid-container {
+    margin: 20px;
+}
 
+.dashboard-card {
+    position: absolute;
+    top: 15px;
+    left: 20px;
+    right: 20px;
+    bottom: 15px;
+    max-width: 30rem;
+    margin: auto;
+}
+
+.text-card-title .noticce-counter {
+    color: blue;
+    font-weight: 700;
+}
+
+.text-card-title span {
+    background-color: red;
+    color: white;
+    width: 25px;
+    height: 25px;
+    font-size: 15px;
+    padding-top: 4px;
+}
+
+.dashboard-card-content {
+    text-align: center;
+}
+
+.action-direct {
+    margin-top: 1rem;
+    position: absolute;
+    left: 50%;
+    bottom: 1rem;
+    transform: translateX(-50%);
+}
+
+.action-direct .button-direct {
+    background-color: rgb(69, 62, 199);
+    color: white;
+}
+
+.action-direct .button-direct :hover {
+    scale: 1.03;
+}
