@@ -1,1 +1,84 @@
+.header-title {
+    width: 100%;
+    font-weight: 24px;
+    font-size: center;
+    margin-top: 10px;
+    color: #1d6949;
+}
 
+.btn-action {
+    width: inherit;
+    height: inherit;
+    display: flex;
+    justify-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.btn-aciton button {
+    width: 50px;
+    height: 30px;
+    border-radius: 10%;
+    border: none;
+    color: white;
+}
+
+.btn-action button:hover,
+.history-tools .btn-data-action:hover {
+    scale: 1.05;
+}
+
+
+.btn-data-action.export {
+    background-color: #dc3545;
+}
+
+.history-tools {
+    width: 100%;
+    height: 60px;
+    background-color: #d8dddb;
+    position: relative;
+}
+
+.history-tools>input, button {
+    height: 40px;
+}
+
+.history-tools .btn-action-search {
+    position: relative;
+    top: 50%;
+    transform: translateY(-50%);
+    margin: 0;
+    float: left;
+    margin-left: 20px;
+    border: 1px solid #cbc1c1;
+    box-shadow: 0 0 10px rgba(135, 124, 124, 0.3);
+}
+
+.history-tools .btn-data-action {
+    float: right;
+    display: flex;
+    align-items: center;
+    justify-items: center;
+    border-style: none;
+    border-radius: 2rem;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    color: white;
+    font-weight: 400;
+    position: relative;
+    top: 50%;
+    transform: translateY(-50%);
+    margin-right: 30px;
+}
+
+.history-tools .btn-data-action.search {
+    float: left;
+    margin: 0;
+    left: 20px;
+    background-color: #0a9585;
+}
+
+::ng-deep .btn-action-search.dept .mat-mdc-form-field-subcript-wrapper,
+.mat-mdc-form-field-bottom-align::before {
+    height: 0;
+}
