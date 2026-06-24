@@ -1,1 +1,27 @@
+<div class="grid-container">
+    <mat-grid-list cols="2" rowHeight="350px">
+        @for (card of cards; track card) {
+            <mat-grid-title>
+                <mat-card class="dashboard-card">
+                    <mat-card-header>
+                        <mat-card-title class="text-card-title">
+                            @if(card.show) {
+                                <h2 matBadge="{{card.counter}}" matBadgeOverlap="false" class="notice-counter">{{card.title}}</h2>
+                            } @else {
+                                <h2 class="notice-counter">{{card.title}}</h2>
+                            }
+                        </mat-card-title>
+                    </mat-card-header>
+s
+                    <mat-card-content class="dashboard-card-content">
+                        <img mat-card-image src="{{card.picture}}" alt="{{card.title}}" width="170rem" height="170rem">
+                    </mat-card-content>
 
+                    <mat-card-actions class="action-direct">
+                        <button mat-raise-button class="button-direct" (click)="changeRoute(card.source)">View</button>
+                    </mat-card-actions>
+                </mat-card>
+            </mat-grid-title>
+        }
+    </mat-grid-list>
+</div>
