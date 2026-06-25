@@ -1,1 +1,82 @@
+.item-delivery-container {
+    width: 100%;
+}
 
+.item-delivery-container .item-delivery-header {
+    background-color: #087064;
+    color: #ffff;
+    position: relative;
+    height: 3.75rem;
+    text-align: center;
+}
+
+.item-delivery-container .item-delivery-content {
+    padding: 1.14rem 1.25rem 0 1.25rem;
+    font-size: 16px;
+}
+
+.item-delivery-content img#detailImage {
+    position: absolute;
+    width: 11.25rem;
+    height: 11.25rem;
+    right: 2.5rem;
+    top: 7.5rem;
+    box-shadow: 0 0 10px rgba(135, 124, 124, 0,3);
+}
+
+.item-delivery-container button {
+    border-style: none;
+}
+
+.item-delivery-container .item-delivery-actions {
+    display: flex;
+    justify-content: center;
+    gap: 5rem;
+}
+
+.item-delivery-container .item-delivery-actions:hover {
+    scale: 1.05;
+}
+
+.item-delivery-container .item-delivery-actions .detail-btn-action {
+    height: 2.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 5rem;
+    border-radius: 2rem;
+    box-shadow: 0 0 10px rgba(142, 121, 121, 0.3);
+    color: #ffff;
+}
+
+.item-delivery-input .form-row {
+    display: flex;
+    gap: 10rem;
+    justify-content: space-around;
+}
+
+.item-delivery-input .form-row.purpose {
+    height: 4rem;
+    padding-bottom: 1rem;
+    gap: 1rem;
+}
+
+.item-delivery-input .form-row.purpose textarea {
+    width: 100%;
+}
+
+.item-delivery-input .form-row.purpose textarea :focus {
+    border-style: none;
+}
+
+.item-delivery-actions .detail-btn-action.delivery {
+    background-color: #198754;
+}
+
+.item-delivery-actions .detail-btn-action.item-details-close {
+    background-color: #dc3545;
+}
+
+.mat-divider {
+    border-top-color: #aab0c1 !important;
+}
