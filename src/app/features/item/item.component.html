@@ -1,24 +1,53 @@
 <ng-template #action let-item>
-    <div class="action-buttons">
-        <button mat-icon-button color="primary" aria-label="Edit" (click)="edit(item.id)">
-            <mat-icon>edit</mat-icon>
-        </button>
-        <button mat-icon-button color="warn" aria-label="Delete" (click)="delete(item.id)">
-            <mat-icon>delete</mat-icon>
-        </button>
+    <div class="btn-action">
+         @if(canChangeInOutItem) {
+            <button matButton matTooltip="edit" (click)="edit(item.id)" class="btn-edit">
+                <mat-icon>border_color</mat-icon>
+            </button>
+         }
+
+         @if(canAction) {
+            <button matButton (click)="delete(item.id)" matTooltip="delete" class="btn-delete">
+                <mat-icon>delete_forever</mat-icon>
+            </button>
+         }
+
+         @if(canChangeInOutItem) {
+            <button matButton (click)="subDetails(item.id)" matTooltip="more" class="btn-more">
+                <mat-icon>subject</mat-icon>
+            </button>
+         }
     </div>
 </ng-template>
 
-<div class="toolbar">
-    <button mat-raised-button color="primary" (click)="create()">Create Item</button>
+<div class="header-title">
+    <h2>ITEM</h2>
 </div>
 
-<div class="upload-file">
-    <h3>Upload Excel</h3>
+<div class="item-tools">
+    <input type="text" matInput [(ngModel)]="searchText" placeholder="Input here..." class="btn-action-search" #filter>
 
-    <input type="file" (change)="onFileChange($event)" accept=".xlsx, .xls" />
+    <button matButton="elevated" (click)="getData(filter.value)" class="btn-data-action search">
+        <span>Search</span>
+        <mat-icon>get_app</mat-icon>
+    </button>
 
-    <button [disabled]="!file" (click)="submit()">Upload</button>
+    <button matButton="elevated" class="btn-data-action export" (click)="exportItem()">
+        <span>Export</span>
+        <mat-icon>get_app</mat-icon>
+    </button>
+
+    @if(canAction) {
+        <button matButton="elevated" class="btn-data-action import" (click)="uploadItem()">
+            <span>Upload</span>
+            <mat-icon>publish</mat-icon>
+        </button>
+
+        <button class="btn-data-action add-item" matButton="elevated" (click)="addItem()">
+            <span>Add Item</span>
+            <mat-icon>add_circle_outline</mat-icon>
+        </button>
+    }
 </div>
 
-<app-table [columns]="columns" [data]="items" [pageSize]="5" [pageSizeOptions]="[5, 10, 25]"></app-table>
+<app-table [columns]="columns" [data]="items"></app-table>
