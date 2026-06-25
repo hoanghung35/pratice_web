@@ -1,0 +1,45 @@
+<div class="header-title">
+    <h2>INVENTORY</h2>
+</div>
+
+<div class="sub-main-invent">
+
+    <div class="total-invent">
+        <div class="invent-infor">
+            <span class="invent-infor-title">Normal part (&lt;100$)</span>
+            <span class="invent-infor-value"> : {{normalPart}}</span>
+        </div>
+        <div class="invent-infor">
+            <span class="invent-infor-title">Expensive part (>=100$)</span>
+            <span class="invent-infor-value"> : {{expensivePart}}</span>
+        </div>
+    </div>
+
+    <div class="invent-with-condition">
+        <mat-form-field class="invent-condition-input">
+            <mat-label>From (dd/mm/yyyy)</mat-label>
+            <input matInput [matDatepicker]="fromDate" [(ngModel)]="fromD">
+            <mat-datepicker-toggle matIconSuffix [for]="fromDate"></mat-datepicker-toggle>
+            <mat-datepicker #fromDate></mat-datepicker>
+        </mat-form-field>
+
+        <mat-form-field class="invent-condition-input">
+            <mat-label>To (dd/mm/yyyy)</mat-label>
+            <input matInput [matDatepicker]="toDate" [(ngModel)]="toD">
+            <mat-datepicker-toggle matIconSuffix [for]="toDate"></mat-datepicker-toggle>
+            <mat-datepicker #toDate></mat-datepicker>
+        </mat-form-field>
+
+        <button matButton="elevated" class="invent-condition-input btn" (click)="getRepoertWithFilter()">
+            <span>Search</span>
+            <mat-icon>search</mat-icon>
+        </button>
+    </div>
+
+    <button matButton="elevated" class="btn-invent-report" (click)="makeReport()">
+        <span>Report</span>
+        <mat-icon>get_app</mat-icon>
+    </button>
+</div>
+
+<app-tale [columns]="columns" [data]="invents"></app-tale>
