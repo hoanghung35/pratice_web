@@ -1,0 +1,71 @@
+.header-title {
+    width: 100%;
+    font-weight: 700;
+    font-size: 24px;
+    text-align: center;
+    margin-top: 10px;
+    color: #1d6949;
+}
+
+.sub-main-invent {
+    background-color: #d8dddb;
+    display: flext;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+.total-invent {
+    padding-left: 1.25rem;
+    width: 18rem;
+    font-weight: 600;
+    position: relative;
+}
+
+.total-invent .invnet-infor {
+    width: 100%;
+    border: 1px solid #5f5e5e;
+    height: 50%;
+    padding: 5px;
+    font-size: 16px;
+    color: rgb(20, 85, 120);
+}
+
+.invnet-infor .invent-infor-title {
+    display: inline-block;
+    width: 70%;
+}
+
+.invent-with-condition .invent-condition-input {
+    margin: 0 10px;
+}
+
+button.btn-invent-report,
+.invent-with-condition .invent-condition-input.btn {
+    border-style: none;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    color: #ffff;
+    border-radius: 2rem;
+    height: 2.5rem;
+    right: 1.25rem;
+    position: relative;
+    float: right;
+    display: flex;
+    justify-items: center;
+    align-items: center;
+}
+
+button.btn-invent-report {
+    background-color: #dc3545;
+}
+
+.invent-with-condition .invent-condition-input.btn {
+    background-color: #0a9585;
+    top: 8px;
+    left: 2rem;
+}
+
+::ng-dept .invent-with-condition .mat-mdc-form-field-subscript-wrapper,
+.invent-with-condition .mat-mdc-form-field-bottom-align::before {
+    height: 0;
+}
