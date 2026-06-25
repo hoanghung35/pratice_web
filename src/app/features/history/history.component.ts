@@ -60,4 +60,35 @@ export class HistoryComponent implements OnInit, AfterViewInit {
   ngOnInit(): void {
     this.getHistory();
   }
+
+  getHistory() {
+    return this.inventServie.getHistory().subcribe((res: History[]) => {
+      this.histories = res;
+      this.dataBackup = res;
+      this.cdRef.detectChanges();
+    });
+  }
+
+  exportHistory() {
+    this.inventService.exportHistoryFile(this.histories).subcribe({
+      next: (blob) => {
+        saveAs(blob, 'history.xlsx');
+      },
+      error: (err) => {
+        this.dialogService.AutoAlterDialog({
+          message: 'Export History Failed',
+          showcheck: false
+        });
+      }
+    });
+  }
+
+  getData(text: string) {
+    if(!text) {
+      this.histories = this.dataBackup;
+      return;
+    }
+    this.histories =  this.dataBackup;
+    this.histories = this.inventService.search(this.histories, text);
+  }
 }
