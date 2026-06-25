@@ -1,1 +1,78 @@
+<div class="item-delivery-container">
+    <h2 mat-dialog-title class="item-delivery-header">Delivery Item</h2>
 
+    <mat-dialog-content class="item-delivery-content">
+
+        <p><strong>EN Name: </strong> {{item.enName}}</p>
+        <p><strong>VN Name: </strong> {{item.vnName}}</p>
+        <p><strong>Maker: </strong> {{item.maker}}</p>
+        <p><strong>Supplier: </strong>{{item.supplier}}</p>
+        <p><strong>Position In: </strong> {{item.positionIn}}</p>
+
+        <img [src]="srcImage" alt="item image" id="detailImage">
+
+        <p>
+            <strong>Remain: </strong> {{item.quantity}}
+            <strong> Unit: </strong> {{item.unit}}
+        </p>
+
+        <p><strong>Dept: </strong>Tien Son</p>
+        <p>
+            <strong>Cost per item: </strong> {{item.cost}}
+            <span>{{item.currency}}</span>
+        </p>
+        <p><strong>Item Code: </strong></p> {{item.itemCode}}
+
+        <div class="item-delivery-input">
+
+            <div class="form-row">
+
+                <mat-form-field appearance="fill" class="full-width">
+                    <mat-label>*Stock Out Qty</mat-label>
+                    <input type="number" matInput class="deliveryQty" min="0" [(ngModel)]="deliveryQty" (change)="onChangeInput($event, 0)">
+                </mat-form-field>
+
+                <mat-form-field appearance="fill" class="full-width">
+                    <mat-label>*Requestor Code</mat-label>
+                    <input type="text" matInput class="requestorCode" [(ngModel)]="requestorCode" (change)="onChangeInput($event, 2)">
+                </mat-form-field>
+
+            </div>
+
+            <div class="form-row">
+
+                <mat-form-field appearance="fill" class="full-width">
+                    <mat-label>*Confirm Qty</mat-label>
+                    <input type="number" matInput [(ngModel)]="confirmQty" min="0" class="confirmQty" (change)="onChangeInput($event, 1)">
+                </mat-form-field>
+
+                <mat-form-field appearance="fill" class="full-width">
+                    <mat-label>*Requestor Name</mat-label>
+                    <input type="text" matInput [(ngModel)]="requestorname" class="requestorName" (change)="onChangeInput($event, 3)">
+                </mat-form-field>
+
+            </div>
+
+            <div class="form-row purpose">
+
+                <strong>
+                    <p>Purpose:</p>
+                </strong>
+                <textarea id="purpose" matInput type="text" placeholder="Enter the purpose" [(ngModel)]="purpose" (change)="onChangeInput($event, 4)"></textarea>
+
+            </div>
+
+        </div>
+        @if(!detectError() && isShow) {
+            <mat-error>{{message}}</mat-error>
+        }
+
+    </mat-dialog-content>
+    <mat-divider></mat-divider>
+
+    <mat-dialog-actions class="item-delivery-action">
+        <button matButton class="detail-btn-action delivery" (click)="delivery()">Delivery</button>
+
+        <button matButton class="item-details-close detail-btn-action" mat-dialog-close>Cancel</button>
+    </mat-dialog-actions>
+</div>
