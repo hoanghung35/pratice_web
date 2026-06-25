@@ -9,32 +9,45 @@ import { CreateItemComponent } from './item.dialog/create.item/create.item.compo
 
 @Component({
   selector: 'app-item',
-  standalone: false,
+  standalone: true,
   templateUrl: './item.component.html',
+  styleUrl: './item.component.scss',
+  imports: [SharedModule',
   providers: [DatePipe]
 })
 export class ItemComponent implements OnInit, AfterViewInit {
   items: Item[] = [];
-  file!: File;
+  dataBackup: Item[] = [];
+  searchText = "";
+  canDelete: boolean = false;
+  canAction: boolean = false;
+  canChangeInOutItem: boolean = false;
 
   @ViewChild('action', { static: true })
   actionTpl!: TemplateRef<any>;
+  selected?: string;
 
   columns: TableColumn<Item>[] = [];
 
-  ngAfterViewInit() {
+  ngAfterViewInit(): void {
     this.columns = [
-      { key: 'enName', label: 'EN Name', width: '180px' },
-      { key: 'vnName', label: 'VN Name', width: '180px' },
-      { key: 'maker', label: 'Maker', width: '140px' },
+      { key: 'enName', label: 'EN Name', width: '31%' },
+      { key: 'vnName', label: 'VN Name', width: '31%' },
+      { key: 'maker', label: 'Maker', width: '7%', style: 'center' },
       {
         key: 'quantity',
         label: 'Qty',
-        width: '90px',
+        width: '6%',
         render: i => i.quantity.toString()
       },
-      { key: 'positionIn', label: 'Position', width: '140px' },
-      { label: 'Actions', template: this.actionTpl, width: '120px' }
+      { key: 'positionIn', label: 'Position', width: '7%', style: 'center' },
+      {
+        key: 'deptName',
+        label: 'Location',
+        width: '7%',
+        style: 'center'
+      },
+      { label: 'Actions', template: this.actionTpl }
     ];
 
     this.cdRef.detectChanges();
@@ -44,82 +57,111 @@ export class ItemComponent implements OnInit, AfterViewInit {
     private itemService: ItemService,
     private dialogService: DialogService,
     private dialog: MatDialog,
-    private datePipe: DatePipe,
-    private cdRef: ChangeDetectorRef
+    private cdRef: ChangeDetectorRef,
+    private authService: AuthService
   ) { }
 
   ngOnInit() {
-    this.itemService.getItems().subscribe((res: Item[]) => {
-      this.items = res;
+    this.getAllItem();
+    this.canAction = this.authService.role == 'dev' || this.authService.role == 'super';
+    this.canChangeInOutItem = this.authService.role == 'dev' || this.authService.role == 'admin';
+  }
 
+  edit(id: UUID) {
+    const item = this.items.find(i => i.id === id);
+    if (!item) return;
+
+    this.dialog.open(ItemEditComponent, {
+      data: item,
+      maxWidth: '80rem',
+      width: '60rem',
+      panelClass: 'item-edit-container',
+      disableClose: true
+    })
+      .afterClosed().subscribe(() => {
+        this.getAllItem();
+      });
+  }
+
+  delete(id: UUID) {
+      if(window.confirm("Delete item?")) {
+        this.itemService.deleteItem(id).subscribe({
+          next: () => {
+            this.dialogService.AutoAlterDialog({
+              message: 'Delete Item Success',
+              showcheck: true
+            });
+          },
+          error: (err) => {
+            this.dialogService.AutoAlterDialog({
+              message: 'Delete Item Faild!',
+              showcheck: false
+            });
+          }
+        });
+      }
+  }
+
+  subDetails(id: UUID) {
+    const item = this.items.find(i => i.id === id);
+    this.dialog.open(ItemDialogComponent, {
+      data: item,
+      maxWidth: '80rem',
+      width: '50rem',
+      panleClass: 'item-details-container',
+      disableClose: true
+    })
+      .afterClosed().subscribe(() => {
+        this.getAllItem();
+      });
+  }
+
+  getData(text: string) {
+    if(!text) {
+      this.items = this.dataBackup;
+      return;
+    }
+
+    this.items = this.dataBackup;
+    ths.items = this.itemService.search(this.items, text);
+  }
+
+  getAllItem() {
+    this.itemService.getItem().subsribe((res: Item[]) => {
+      this.items = res;
+      this.dataBackup = res;
       this.cdRef.detectChanges();
     });
   }
 
-  create() {
-    const dialogRef = this.dialog.open(CreateItemComponent, {
-      width: '800px'
-    });
-
-    dialogRef.afterClosed().subscribe((createdItem: Item) => {
-      if (createdItem) {
-        this.items.unshift(createdItem);
-        this.cdRef.detectChanges();
-      }
-    });
-  }
-
-  edit(id: string) {
-    const item = this.items.find(i => i.id === id);
-    if (!item) return;
-
-    const dialogConfig: any = {
-      title: 'Edit Item',
-      type: 'form',
-      fields: [
-        { name: 'enName', label: 'EN Name', type: 'text', value: item.enName },
-        { name: 'vnName', label: 'VN Name', type: 'text', value: item.vnName },
-        { name: 'quantity', label: 'Quantity', type: 'number', value: item.quantity },
-        { name: 'maker', label: 'Maker', type: 'text', value: item.maker },
-        { name: 'positionIn', label: 'Position', type: 'text', value: item.positionIn }
-      ],
-      okText: 'Save',
-      cancelText: 'Cancel'
-    };
-
-    this.dialogService.openCustomDialog(dialogConfig).afterClosed().subscribe((result: any) => {
-      if (result) {
-        console.log('Updated data:', result);
-        this.itemService.updateItem(id, result).subscribe(updatedItem => {
-          const index = this.items.findIndex(i => i.id === id);
-          if (index !== -1) {
-            this.items[index] = updatedItem;
-            this.cdRef.detectChanges();
-          }
-        });
-      }
-    });
-  }
-
-  delete(id: string) {
-
-  }
-
-  onFileChange(event: any) {
-    this.file = event.target.files[0];
-  }
-
-  importFile() {
-    if (this.file) {
-      this.itemService.importFile(this.file).subscribe();
-    }
+  addItem() {
+    this.dialog.open(ItemCreateComponent, {
+      maxWidth: '80rem',
+      width: '60rem',
+      panelClass: 'item-create-container',
+      disableClose: true
+    })
+      .afterClosed().subscribe(() => {
+        this.getAllItem();
+      });
   }
 
   exportItem() {
-    this.itemService.exportItem();
+    this.itemService.exportFile().subscribe(blob => {
+      saveAs(blob, `${formatDate(Date.Now(), 'yyyyMMdd', 'em-US')}item.xlsx`)
+    });
   }
 
-  submit() {
-
+  uploadItem() {
+    this.dialog.open(UploadFileItemComponent, {
+      maxWidth: '60rem',
+      width: '40rem',
+      panelClass: 'upload-file-container',
+      disableClose: true
+    })
+      .afterClosed().subscribe({
+        next: () => this.getAllItem(),
+        error: (err) => console.log(err)
+      });
   }
 }
