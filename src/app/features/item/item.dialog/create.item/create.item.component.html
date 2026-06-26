@@ -1,102 +1,81 @@
-<h2 mat-dialog-title>Create Item</h2>
+<div class="item-create-container">
 
-<mat-dialog-content>
-    <form class="create-item-form">
-        <div class="form-row">
-            <mat-form-field appearance="fill" class="full-width">
-                <mat-label>Item Code</mat-label>
-                <input matInput type="text" [value]="formData.itemCode"
-                    (input)="onFieldChange('itemCode', $any($event.target).value)" />
-            </mat-form-field>
+    <h2 mat-dialog-title="" class="item-create-header">CreateItem</h2>
 
-            <mat-form-field appearance="fill" class="full-width">
-                <mat-label>EN Name</mat-label>
-                <input matInput type="text" [value]="formData.enName"
-                    (input)="onFieldChange('enName', $any($event.target).value)" />
-            </mat-form-field>
-        </div>
+    <mat-dialog-content class="item-create-content">
+        <form class="create-item-form">
 
-        <div class="form-row">
-            <mat-form-field appearance="fill" class="full-width">
-                <mat-label>VN Name</mat-label>
-                <input matInput type="text" [value]="formData.vnName"
-                    (input)="onFieldChange('vnName', $any($event.target).value)" />
-            </mat-form-field>
+            <div class="form-row">
+                <mat-form-field appearance="fill" class="full-width">
+                    <mat-label>*Item Code</mat-label>
+                    <input type="text" matInput (input)="onFieldChange('itemCode', $event)">
+                </mat-form-field>
 
-            <mat-form-field appearance="fill" class="full-width">
-                <mat-label>Quantity</mat-label>
-                <input matInput type="number" [value]="formData.quantity"
-                    (input)="onFieldChange('quantity', $any($event.target).valueAsNumber || 0)" />
-            </mat-form-field>
-        </div>
+                <mat-form-field appearance="fill" class="full-width">
+                    <mat-label>*Quantity</mat-label>
+                    <input type="number" min="0" matInput (input)="onFieldChange('quantity', $event)">
+                </mat-form-field>
+            </div>
 
-        <div class="form-row">
-            <mat-form-field appearance="fill" class="full-width">
-                <mat-label>Department ID</mat-label>
-                <input matInput type="text" [value]="formData.deptId"
-                    (input)="onFieldChange('deptId', $any($event.target).value)" />
-            </mat-form-field>
+            <div class="form-row">
+                <mat-form-field appearance="fill" class="full-width">
+                    <mat-label>*VN Name</mat-label>
+                    <input type="text" matInput (input)="onFieldChange('vnName', $event)">
+                </mat-form-field>
 
-            <mat-form-field appearance="fill" class="full-width">
-                <mat-label>Area ID</mat-label>
-                <input matInput type="text" [value]="formData.areaId"
-                    (input)="onFieldChange('areaId', $any($event.target).value)" />
-            </mat-form-field>
-        </div>
+                <mat-form-field appearance="fill" class="full-width">
+                    <mat-label>*EN Name</mat-label>
+                    <input type="text" matInput (input)="onFieldChange('enName', $event)">
+                </mat-form-field>
+            </div>
 
-        <div class="form-row">
-            <mat-form-field appearance="fill" class="full-width">
-                <mat-label>Unit</mat-label>
-                <input matInput type="text" [value]="formData.unit"
-                    (input)="onFieldChange('unit', $any($event.target).value)" />
-            </mat-form-field>
+            <div class="form-row">
+                <mat-form-field appearance="fill" class="full-width">
+                    <mat-label>*Maker</mat-label>
+                    <input type="text" matInput (input)="onFieldChange('maker', $event)">
+                </mat-form-field>
 
-            <mat-form-field appearance="fill" class="full-width">
-                <mat-label>Cost</mat-label>
-                <input matInput type="number" [value]="formData.cost"
-                    (input)="onFieldChange('cost', $any($event.target).valueAsNumber || 0)" />
-            </mat-form-field>
-        </div>
+                <mat-form-field appearance="fill" class="full-width">
+                    <mat-label>*Supplier</mat-label>
+                    <input type="text" matInput (input)="onFieldChange('supplier', $event)">
+                </mat-form-field>
+            </div>
 
-        <div class="form-row">
-            <mat-form-field appearance="fill" class="full-width">
-                <mat-label>Currency</mat-label>
-                <input matInput type="text" [value]="formData.currency"
-                    (input)="onFieldChange('currency', $any($event.target).value)" />
-            </mat-form-field>
+            <div class="form-row">
+                <mat-form-field appearance="fill" class="full-width">
+                    <mat-label>*Unit</mat-label>
+                    <input type="text" matInput (input)="onFieldChange('unit', $event)">
+                </mat-form-field>
 
-            <mat-form-field appearance="fill" class="full-width">
-                <mat-label>Maker</mat-label>
-                <input matInput type="text" [value]="formData.maker"
-                    (input)="onFieldChange('maker', $any($event.target).value)" />
-            </mat-form-field>
-        </div>
+                <mat-form-field appearance="fill" class="full-width">
+                    <mat-label>*Cost Per Item</mat-label>
+                    <input type="number" matInput (input)="onFieldChange('cost', $event)">
+                </mat-form-field>
+            </div>
 
-        <div class="form-row">
-            <mat-form-field appearance="fill" class="full-width">
-                <mat-label>Supplier</mat-label>
-                <input matInput type="text" [value]="formData.supplier"
-                    (input)="onFieldChange('supplier', $any($event.target).value)" />
-            </mat-form-field>
+            <div class="form-row">
+                <mat-form-field appearance="fill" class="full-width">
+                    <mat-label>*Currency</mat-label>
+                    <input type="text" matInput (input)="onFieldChange('currency', $event)">
+                </mat-form-field>
 
-            <mat-form-field appearance="fill" class="full-width">
-                <mat-label>Image</mat-label>
-                <input matInput type="text" [value]="formData.image"
-                    (input)="onFieldChange('image', $any($event.target).value)" />
-            </mat-form-field>
-        </div>
+                <mat-form-field appearance="fill" class="full-width">
+                    <mat-label>*Position In</mat-label>
+                    <input type="text" matInput (input)="onFieldChange('positionIn', $event)">
+                </mat-form-field>
+            </div>
 
-        <div class="form-row">
-            <mat-form-field appearance="fill" class="full-width">
-                <mat-label>Position In</mat-label>
-                <input matInput type="text" [value]="formData.positionIn"
-                    (input)="onFieldChange('positionIn', $any($event.target).value)" />
-            </mat-form-field>
-        </div>
-    </form>
-</mat-dialog-content>
+            @if(!detectError() && isShow) {
+                <mat-error>{{message}}</mat-error>
+            }
+        </form>
+    </mat-dialog-content>
 
-<mat-dialog-actions align="end">
-    <button mat-button type="button" (click)="onCancel()">Cancel</button>
-    <button mat-raised-button color="primary" type="button" (click)="onSubmit()">Create</button>
-</mat-dialog-actions>
+    <mat-divider></mat-divider>
+
+    <mat-dialog-actions class="item-create-actions">
+        <button matButton class="detail-btn-action submit" (click)="createItem()">Create</button>
+
+        <button matButton mat-dialog-close class="item-details-close detail-btn-action">Cancel</button>
+    </mat-dialog-actions>
+</div>
