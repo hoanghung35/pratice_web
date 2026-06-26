@@ -1,1 +1,15 @@
+<div class="upload-file-container">
+    <h2 mat-dialog-title class="upload-file-item-header">Upload File Item</h2>
 
+    <mat-dialog-content class="upload-file-item content">
+        <input type="file" (change)="onFileChange($event)" accept=".xlsx, .xls, .csv">
+    </mat-dialog-content>
+
+    <mat-divider></mat-divider>
+
+    <mat-dialog-actions class="upload-file-item-actions">
+        <button [disabled]="!file" (click)="submit()" class="btn-upload-action upload-file">Upload</button>
+
+        <button matButton mat-dialog-close class="btn-upload-action cancel-upload">Cancel</button>
+    </mat-dialog-actions>
+</div>
