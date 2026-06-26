@@ -1,1 +1,52 @@
+<div class="item-receive-container">
+    <h2 mat-dialog-title class="item-receive-header">Receive Item</h2>
 
+    <mat-dialog-content class="item-receive-content">
+        <p><strong>EN Name: </strong>{{item.enName}}</p>
+        <p><strong>VN Name: </strong>{{item.vnName}}</p>
+        <p><strong>Maker: </strong>{{item.maker}}</p>
+        <p><strong>Supplier: </strong>{{item.supplier}}</p>
+        <p><strong>Position In: </strong>{{item.positionIn}}</p>
+
+        <img  alt="item image" id="detailImage" [src]="srcImage">
+
+        <p>
+            <strong>Remain: </strong>{{item.quantity}}
+            <strong>  Unit: </strong>{{item.unit}}
+        </p>
+        <p><strong>Dept: </strong> Tien Son</p>
+        <p>
+            <strong>Cost Per Item: </strong> {{item.cost}}
+            <strong>{{item.currency}}</strong>
+        </p>
+
+        <p><strong>Item Code: </strong> {{item.itemCode}}</p>
+
+        <div class="item-receive-input">
+            <mat-form-field class="receive-form-input">
+                <mat-label>*Receive Qty</mat-label>
+                <input type="number" matInput class="receiveQty" [(ngModel)]="receiveQty" min="0" (input)="onchangeInput($event, 0)">
+            </mat-form-field>
+
+            <mat-form-field class="receive-form-input">
+                <mat-label>*Confirm Qty</mat-label>
+                <input type="number" matInput class="confirmQty" min="0" (input)="onchangeInput($event, 1)">
+            </mat-form-field>
+        </div>
+
+        @if(!detectError() && isShow) {
+            <mat-error>{{message}}</mat-error>
+        }
+
+    </mat-dialog-content>
+
+    <mat-divider></mat-divider>
+    
+    <mat-dialog-actions class="item-receive-actions">
+
+        <button matButton class="detail-btn-action receive" (click)="receive()">Receive</button>
+
+        <button matButton mat-dialog-close class="detail-btn-action item-details-close">Cancel</button>
+
+    </mat-dialog-actions>
+</div>
