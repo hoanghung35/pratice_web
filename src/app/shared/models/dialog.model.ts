@@ -1,17 +1,15 @@
 export interface DialogField {
     name: string;
     label: string;
-    type: string;
+    type: 'text' | 'number' | 'select';
     value?: any;
 }
 
 export interface DialogData {
     title: string;
-    contentComponent?: any;
-    payload?: any;
-    okText?: string;
-    cancelText?: string;
-    confirmText?: string;
-    type?: string;
-    fields?: DialogField[];
+    content?: string;
+    type: 'infor' | 'confirm' | 'form',
+    fields?: string,
+    confirmData?: string,
+    cancelData?: string
 }
