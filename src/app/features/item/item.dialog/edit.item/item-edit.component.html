@@ -1,1 +1,84 @@
+<div class="item-edit-container">
 
+    <h2 mat-dialog-title="" class="item-edit-header">CreateItem</h2>
+
+    <mat-dialog-content class="item-edit-content">
+        <form class="edit-item-form">
+
+            <div class="form-row">
+                <mat-form-field appearance="fill" class="full-width">
+                    <mat-label>Item Code</mat-label>
+                    <input type="text" matInput [value]="tmpItem.itemCode" (input)="onFieldChange('itemCode', $any($event.target).value)">
+                </mat-form-field>
+
+                <mat-form-field appearance="fill" class="full-width">
+                    <mat-label>Quantity</mat-label>
+                    <input type="number" min="0" [value]="tmpItem.quantity" matInput (input)="onFieldChange('quantity', $any($event.target).value)">
+                </mat-form-field>
+            </div>
+
+            <div class="form-row">
+                <mat-form-field appearance="fill" class="full-width">
+                    <mat-label>VN Name</mat-label>
+                    <input type="text" [value]="tmpItem.vnName" matInput (input)="onFieldChange('vnName', $any($event.target).value)">
+                </mat-form-field>
+
+                <mat-form-field appearance="fill" class="full-width">
+                    <mat-label>EN Name</mat-label>
+                    <input type="text" [value]="tmpItem.enName" matInput (input)="onFieldChange('enName', $any($event.target).value)">
+                </mat-form-field>
+            </div>
+
+            <div class="form-row">
+                <mat-form-field appearance="fill" class="full-width">
+                    <mat-label>Maker</mat-label>
+                    <input type="text" matInput [value]="tmpItem.maker" (input)="onFieldChange('maker', $any($event.target).value)">
+                </mat-form-field>
+
+                <mat-form-field appearance="fill" class="full-width">
+                    <mat-label>Supplier</mat-label>
+                    <input type="text" matInput [value]="tmpItem.supplier" (input)="onFieldChange('supplier', $any($event.target).value)">
+                </mat-form-field>
+            </div>
+
+            <div class="form-row">
+                <mat-form-field appearance="fill" class="full-width">
+                    <mat-label>Unit</mat-label>
+                    <input type="text" matInput [value]="tmpItem.Unit" (input)="onFieldChange('unit', $any($event.target).value)">
+                </mat-form-field>
+
+                <mat-form-field appearance="fill" class="full-width">
+                    <mat-label>Cost Per Item</mat-label>
+                    <input type="number" [value]="tmpItem.cost" matInput (input)="onFieldChange('cost', $any($event.target).value)">
+                </mat-form-field>
+            </div>
+
+            <div class="form-row">
+                <mat-form-field appearance="fill" class="full-width">
+                    <mat-label>Currency</mat-label>
+                    <input type="text" matInput [value]="tmpItem.currency" (input)="onFieldChange('currency', $any($event.target).value)">
+                </mat-form-field>
+
+                <mat-form-field appearance="fill" class="full-width">
+                    <mat-label>Position</mat-label>
+                    <input type="text" matInput [value]="tmpItem.positionIn" (input)="onFieldChange('positionIn', $any($event.target).value)">
+                </mat-form-field>
+            </div>
+
+            <div class="form-row upload-file">
+                <div>
+                    <input type="file" accept=".png, .jpg" id="addImageDetail" (change)="onChangeImage($event)">
+                    <label for="addImageDetail">(*.png, *.jpg, *.gif)</label>
+                </div>
+            </div>
+        </form>
+    </mat-dialog-content>
+
+    <mat-divider></mat-divider>
+
+    <mat-dialog-actions class="item-edit-actions">
+        <button matButton class="detail-btn-action submit" (click)="changeItem()">Create</button>
+
+        <button matButton mat-dialog-close class="item-details-close detail-btn-action">Cancel</button>
+    </mat-dialog-actions>
+</div>
