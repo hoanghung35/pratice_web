@@ -5,14 +5,14 @@ export interface Item {
     itemCode: string;   // not itemcode
     enName: string;
     vnName: string;
-    quantity: number;
-    deptId: UUID;       // not deptid
-    areaId: UUID;       // not areaid
-    unit: string;
-    cost: number;
-    currency: string;
+    deptName: string;
     maker: string;
     supplier: string;
+    positionIn: string;
+    quantity: number;
+    deptId: string;
+    unit: string;
+    cost: number;
     image: string;
-    positionIn: string; // not positionin
+    currency: string;
 }
