@@ -1,22 +1,20 @@
-import { OrderService } from './../../core/services/order.service';
-import { JwtCookieInterceptor } from './../../core/interceptors/jwt-cookie.interceptor';
-import { AfterViewInit, ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import { TableColumn } from '../../shared/models/table-column.model';
-import { Order } from '../../shared/models/order.model';
+
+
+
 
 @Component({
-  selector: 'app-order',
+  selector: 'app-request',
   standalone: false,
-  templateUrl: './order.component.html',
-  styleUrl: './order.component.scss'
+  templateUrl: './request.component.html',
+  styleUrl: './request.component.scss'
 })
-export class OrderComponent implements OnInit, AfterViewInit {
-  orders: Order[] = [];
+export class RequestComponent implements OnInit, AfterViewInit {
+  requests: Request[] = [];
 
-  columns: TableColumn<Order>[] = [];
+  columns: TableColumn<Request>[] = [];
 
   constructor(
-    private orderService: OrderService,
+    private requestService: RequestService,
     private cdRef: ChangeDetectorRef
   ) { }
 
