@@ -1,4 +1,4 @@
-export interface DialogField {
+export interface DynamicFiled {
     name: string;
     label: string;
     type: 'text' | 'number' | 'select';
@@ -9,7 +9,7 @@ export interface DialogData {
     title: string;
     content?: string;
     type: 'infor' | 'confirm' | 'form',
-    fields?: string,
+    fields?: DynamicField[],
     confirmData?: string,
     cancelData?: string
 }
