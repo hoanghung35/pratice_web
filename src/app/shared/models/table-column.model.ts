@@ -5,6 +5,7 @@ export interface TableColumn<T> {
     key?: keyof T;
     label: string;
     width?: string | number;
+    style?: string;
     render?: (row: T) => string;
     template?: TemplateRef<{ $implicit: T }>;
 }
