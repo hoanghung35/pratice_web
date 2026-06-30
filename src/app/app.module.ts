@@ -25,23 +25,17 @@ import { LoadingComponent } from './shared/loading/loading.component';
   declarations: [
     AppComponent,
     NavbarComponent,
-    HomepageComponent,
     LoginComponent,
-    MainLayoutComponent
+    MainLayoutComponent,
+    PageErrorComponent,
+    AlterComponent,
+    ForgetPasswordComponent,
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
-    MatIconModule,
-    MatToolbarModule,
-    MatButtonModule,
-    MatSidenavModule,
-    MatListModule,
-    MatGridListModule,
-    MatCardModule,
-    MatMenuModule,
+    MaterialModule,
     HttpClientModule,
-    ReactiveFormsModule,
     LoadingComponent
   ],
   providers: [
