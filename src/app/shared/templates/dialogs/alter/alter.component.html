@@ -1,1 +1,17 @@
-
+@if(success) {
+    <mat-dialog-content>
+        <div id="successModal" class="modal-success">
+            <div class="ok_checkmark"></div>
+            <h2 class="modal-success_text">Success!</h2>
+            <p class="modal-success_text">{{data.message}}</p>
+        </div>
+    </mat-dialog-content>
+}
+@else if(failed) {
+    <mat-dialog-content>
+        <div id="errorModal" class="modal-error">
+            <div class="failed_checkmark"><mat-icon>close</mat-icon></div>
+            <h2 class="modal-error_text">Failed!</h2>
+            <p class="modal-error_text">{{data.message}}</p>
+        </div>
+    </mat-dialog-content>
