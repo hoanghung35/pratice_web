@@ -1,45 +1,139 @@
-.main-toolbar {
-  position: fixed;
-  top: 0;
-  z-index: 2;
-  width: 100%;
+@import '../../../../styles.scss';
+
+$font-title: 27px;
+
+.mat-toolbar {
+    background: inherit;
+    width: 100%;
 }
 
-/* push the sidenav container below the fixed toolbar */
 .sidenav-container {
-  margin-top: 64px;
-  height: calc(100vh - 64px);
+    box-sizing: border-box;
+    height: calc(100vh - 70px);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    background-color: inherit;
 }
 
-/* mobile breakpoint toolbar height is 56px */
-@media (max-width: 599px) {
-  .sidenav-container {
-    margin-top: 56px;
-    height: calc(100vh - 56px);
-  }
+.sidenav-container .sidenav-title {
+    background-color: rgb(241, 240, 239);
+    width: 250px;
+    padding: 5px 10px 10px 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    border-radius: 0;
+    border-bottom-right-radius: 15px;
+    animation: fadein 0.5 ease-out;
 }
 
-.sidenav {
-  width: 200px;
+.sidenav-container .sidenav-content {
+    margin: 10px;
+    border-radius: 1rem;
+    background-color: rgb(255, 255, 255);
 }
 
-.sidenav .mat-toolbar {
-  background: inherit;
+.nav-toolbar-show {
+    height: 70px;
+    background-color: $bg-color-header;
+    width: 100%;
 }
 
-/* expandable section styling */
-.expandable {
-  cursor: pointer;
+.nav-toolbar-show .nav-home>button {
+    background: inherit;
+    border: none;
+    font-weight: $font-weight-large;
+    font-size: $font-title;
 }
 
-.spacer {
-  flex: 1 1 auto;
+.nav-navside-icon {
+    font-size: $font-title;
 }
 
-.sub-list {
-  padding-left: 16px;
+.nav-user-box {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-right: 1.5rem;
 }
 
-.sub-list a.mat-list-item {
-  padding-left: 24px;
+.nav-user-box > p {
+    font-size: 20px;
+    font-style: italic;
+    margin: 0;
+    padding-bottom: 2px;
+}
+
+.nav-user-change,
+.nav-user-notice {
+    background: inherit;
+    border: none;
+    color: $text-color-default;
+    margin: 0 3px;
+}
+
+.nav-user-change :hover,
+.nav-user-notice :hover {
+    scale: 1.05;
+}
+
+.nav-user-config>.nav-user-change,
+.nav-user-box,
+.nav-user-notice {
+    height: inherit;
+}
+
+.nav-toolbar-show .nav-home > button,
+.nav-navside-icon,
+.nav-user-box {
+    color: $text-color-default;
+}
+
+.nav-user-change ::before {
+    content: '';
+    width: 10px;
+    height: 3px;
+    background: gray;
+}
+
+//sidenav-title
+.title-mat-list {
+    width: 1005;
+    height: 3.125rem;
+    margin: 5px 0;
+}
+
+.link-text {
+    color: rgb(29, 105, 73);
+    font-weight: 600;
+    font-size: 1.25rem;
+    height: 100%;
+    box-sizing: border-box;
+    padding: 0 8px;
+}
+
+mat-nav-list {
+    padding: 0;
+}
+
+.mat-icon.title-icon {
+    color: rgb(29, 105, 73);
+    position: relative;
+    top: 4px;
+}
+
+a.link-text.child {
+    padding: 1.25rem 0 1.25rem 1.875rem;
+    position: relative;
+    top: 4px;
+}
+
+a.link-text.child mat-icon,
+span {
+    height: 100%;
+    font-weight: 500;
+    font-size: 1.25rem;
+}
+
+.mat-divider {
+    border-top-color: #aab0c1 !important;
 }
