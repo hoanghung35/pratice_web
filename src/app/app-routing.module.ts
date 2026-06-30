@@ -12,25 +12,71 @@ const routes: Routes = [
     canActivate: [AuthGuard],
     children: [
       {
+        title: 'Homepage',
+        path: 'dashboard',
+        loadChildrem: () => import('./features/dashboard/dashboard.module).then(m => m.DashBoardModule)
+      },
+      {
+        title: 'ITEM',
         path: 'items',
-        loadChildren: () => import('./features/item/item.module')
-          .then(m => m.ItemModule)
+        loadChildren: () => import('./features/item/item.module').then(m =>  m.ItemModule)
       },
       {
+        title: 'REQUEST',
+        path: 'request',
+        loadChildren: () => import('./features/request/request.module').then(m => m.RequestModule),
+        canActive: [RoleGuard],
+        data: { roles : ['admin', 'dev'] }
+      },
+      {
+        title: 'APPROVE',
         path: 'approve',
-        loadChildren: () => import('./features/approve/approve.module')
-          .then(m => m.ApproveModule),
-        canActivate: [RoleGuard],
-        data: { roles: ['admin'] }
+        loadChildren: () => import('./features/approve//approve.module').then(m => m.ApproveModule),
+        canActive: [RoleGuard],
+        data: { roles: ['manager', 'gm', 'dev', 'super'] }
       },
       {
-        path: 'orders',
-        loadChildren: () => import('./features/order/order.module')
-          .then(m => m.OrderModule)
+        title: 'ACCOUNT',
+        path: 'account',
+        loadChildren: () => import('./features/account/account.module').then(m => m.AccountMoudle),
+        canActive: [RoleGuard],
+        data: { roles: ['dev'] }
+      },
+      {
+        title: 'INVENTORY',
+        path: 'inventory',
+        loadChildren: () => import('./features/inventory/inventory.module').then(m => m.InventModule)
+      },
+      {
+        title: 'HISTORY',
+        path: 'history',
+        loadChildren: () => import('./features/history/history.module').then(m => m.HistoryModule)
+      },
+      {
+        title: 'CURRENCY',
+        path: 'currency',
+        loadChildren: () => import('./features/currency/currency.module').then(m => m.CurrencyModule)
+      },
+      {
+        path: '',
+        redirecTo: './dashboard',
+        pathMatch: 'full'
       }
     ]
   },
-  { path: 'login', component: LoginComponent }
+  { 
+    path: 'login',
+    component: LoginComponent,
+    children: [
+      { path: 'reset-password', component: ForgetPasswordComponent }
+    ],
+    title: 'LOGIN'
+  },
+  {
+    title: 'ERROR',
+    component: PageErrorComponent,
+    path: '**'
+  }
 ];
 
 @NgModule({
