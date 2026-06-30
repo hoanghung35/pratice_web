@@ -1,71 +1,110 @@
-<mat-toolbar color="primary" class="main-toolbar">
-  <button type="button" aria-label="Toggle sidenav" mat-icon-button (click)="drawer.toggle()">
-    <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
-  </button>
-  <span>FE_Web</span>
+<mat-toolbar class="nav-toolbar-show">
+    <button type="button" arial-label="Toggle sidnav" mat-icon-button class="nav-navside-icon" (clikc)="drawer.toggle()">
+        <mat-con>menu</mat-con>
+    </button>
+
+    <div class="nav-home">
+        <button matButton routerLink="">ITEM CONTROL</button>
+    </div>
+
+    <div class="nav-user-config">
+
+        <div class="nav-user-box">
+            <p id="nav-user--name">Welcome, {{userName}}</p>
+        </div>
+
+        <button type="button" mat-con-button aria-label="Notifications" matTooltip="Notifications" class="nav-user-notice">
+            <mat-icon>notifications</mat-icon>
+        </button>
+
+        <button type="button" mat-con-button aria-label="Edit profile" matTooltip="Edit profile" (click)="showProfile()" class="nav-user-change">
+            <mat-con>creat</mat-con>
+        </button>
+
+        <button type="button" mat-con-button (click)="logout()" aria-label="logout" matTooltip="Logout" class="nav-user-change">
+            <mat-icon>exit_to_app</mat-icon>
+        </button>
+    </div>
 </mat-toolbar>
 
+<!-- silde navigation -->
+
 <mat-sidenav-container class="sidenav-container">
-  <mat-sidenav #drawer class="sidenav" fixedInViewport [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'"
-    [mode]="(isHandset$ | async) ? 'over' : 'side'" [opened]="(isHandset$ | async) === false">
-    <mat-toolbar>Menu</mat-toolbar>
-    <mat-nav-list>
-      <!-- example links, adjust routes/icons as needed -->
-      <a mat-list-item routerLink="/dashboard">
-        <mat-icon>dashboard</mat-icon>
-        <span class="link-text">Dashboard</span>
-      </a>
-      <a mat-list-item routerLink="/customers">
-        <mat-icon>people</mat-icon>
-        <span class="link-text">Customers</span>
-      </a>
+    <mat-sidenav #drawer fixedInViewPort [attr]="(isHandset$ | async) ? 'dialog' : 'navigation'" [mode]="(isHandset$ | async) ? 'over' : 'side'" [opened]="(isHandset$ | async) === false"  class="sidenav-title">
 
-      <mat-list-item class="expandable" (click)="toggleSection('mobile')">
-        <mat-icon>phone_iphone</mat-icon>
-        <span class="link-text">Item</span>
-        <span class="spacer"></span>
-        <mat-icon>{{ expanded.mobile ? 'expand_less' : 'expand_more' }}</mat-icon>
-      </mat-list-item>
-      <mat-nav-list *ngIf="expanded.mobile" class="sub-list">
-        <a mat-list-item routerLink="/items">
-          <mat-icon>phone_iphone</mat-icon>
-          <span class="link-text">iOS</span>
-        </a>
-        <a mat-list-item routerLink="/mobile/android">
-          <mat-icon>android</mat-icon>
-          <span class="link-text">Android</span>
-        </a>
-      </mat-nav-list>
+        <mat-nav-list>
+            <!-- Dashboard -->
+            <a href="" mat-list-item routerLink="./dashboard" class="title-mat-list">
+                <mat-icon class="title-icon">dashboard</mat-icon>
+                <span class="link-text">DASHBOARD</span>
+            </a>
+            <!-- Items -->
+            <a href="" mat-list-item routerLink="" class="title-mat-list">
+                <mat-icon class="title-icon">assignment</mat-icon>
+                <span class="link-text">ITEM</span>
+            </a>
 
-      <mat-list-item class="expandable" (click)="toggleSection('frameworks')">
-        <mat-icon>build</mat-icon>
-        <span class="link-text">Frameworks</span>
-        <span class="spacer"></span>
-        <mat-icon>{{ expanded.frameworks ? 'expand_less' : 'expand_more' }}</mat-icon>
-      </mat-list-item>
-      <mat-nav-list *ngIf="expanded.frameworks" class="sub-list">
-        <a mat-list-item routerLink="/frameworks/spring">
-          <span class="link-text">Spring</span>
-        </a>
-        <a mat-list-item routerLink="/frameworks/hibernate">
-          <span class="link-text">Hibernate</span>
-        </a>
-        <a mat-list-item routerLink="/frameworks/struts">
-          <span class="link-text">Struts</span>
-        </a>
-      </mat-nav-list>
+            <!-- Inventory -->
+             <mat-divider></mat-divider>
 
-      <a mat-list-item routerLink="/orders">
-        <mat-icon>person</mat-icon>
-        <span class="link-text">Order</span>
-      </a>
-      <a mat-list-item routerLink="/account">
-        <mat-icon>account_circle</mat-icon>
-        <span class="link-text">Account</span>
-      </a>
-    </mat-nav-list>
-  </mat-sidenav>
-  <mat-sidenav-content>
-    <router-outlet></router-outlet>
-  </mat-sidenav-content>
+             <mat-list-item (click)="toggleDraw[2] = !toggleDraw[2]" class="title-mat-list">
+                <mat-icon class="title-icon">assesment</mat-icon>
+
+                <span class="link-text">INVENTORY</span>
+
+                <span>
+                    <mat-icon *ngIf="!toggleDraw[2]" class="title-icon">expand_more</mat-icon>
+                    <mat-icon *mgIf="!toggleDraw[2]" class="title-icon">expand_less</mat-icon>
+                </span>
+
+             </mat-list-item>
+
+             <mat-nav-list [hidden]="!toggleDraw[2]">
+                <mat-divider></mat-divider>
+
+                <a mat-list-item class="link-text child" routerLink="./inventory">
+                    <mat-icon class="title-icon">event_available</mat-icon>
+                    <span>Inventory</span>
+                </a>
+                <a mat-list-item class="link-text child" routerLink="./history">
+                    <mat-icon class="title-icon">history</mat-icon>
+                    <span>History</span>
+                </a>
+                <a mat-list-item class="link-text child" routerLink="./currency">
+                    <mat-icon class="title-icon">attach_money</mat-icon>
+                    <span>Currency</span>
+                </a>
+             </mat-nav-list>
+
+             <!-- Request -->
+              @if(userRole == "dev" || userRole = "admin") {
+                <mat-divider></mat-divider>
+                <a mat-list-item routerLink="./request" class="title-mat-list">
+                    <mat-icon class="title-icon">autorenew</mat-icon>
+                    <span class="link-text">REQUEST</span>
+                </a>
+              }
+              <!-- Approve -->
+              @if(userRole != "admin") {
+                <mat-divider></mat-divider>
+                <a mat-list-item routerLink="./approve" class="title-mat-list">
+                    <mat-icon class="title-icon">event_available</mat-icon>
+                    <span class="link-text">APPROVE</span>
+                </a>
+              }
+              <!-- Account -->
+              @if(userRole == "dev") {
+                <mat-divider></mat-divider>
+                <a mat-list-item routerLink="./account" class="title-mat-list">
+                    <mat-icon class="title-icon">account_box</mat-icon>
+                    <span class="link-text">ACCOUNT</span>
+                </a>
+              }
+        </mat-nav-list>
+
+    </mat-sidenav>
+
+    <mat-sidenav-content class="sidenav-content">
+        <router-outlet></router-outlet>
+    </mat-sidenav-content>
 </mat-sidenav-container>
