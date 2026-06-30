@@ -2,3 +2,23 @@
 
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+
+$bg-color-default: #ffff;
+$bg-color-header: #087064;
+$color-header: #0a9685;
+$color-success: #159e65;
+$text-color-default: #ffff;
+$text-color-link: #005cbb;
+$text-color-fail: rgb(207, 33, 33);
+$font-weight-large: 700;
+$font-weight-medium: 500;
+$font-weight-small: 400;
+$bg-color-gradient: linear-gradient(0.25turn, #0e2631, #3e4737, #735d45);
+$header-width: 70px;
+
+@use '@angular/material' as mat;
+
+:root {
+  @include mat.list-overrides((active-indicator-color: blue));
+}
