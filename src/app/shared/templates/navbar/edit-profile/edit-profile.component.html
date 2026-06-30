@@ -1,1 +1,66 @@
+<div class="profile-container">
 
+    <h2 mat-dialog-title class="profile-header">Profile</h2>
+
+    <mat-dialog-content class="profile-content">
+        <div class="profile-input">
+
+            <div class="form-row">
+                <mat-form-field appearance="fill" class="full-width">
+                    <mat-label>*User Name</mat-label>
+                    <input type="text" class="useName" disabled matInput [(ngModel)]="data.userName"
+                        (change)="onChangeInput($event, 'userName')">
+                </mat-form-field>
+            </div>
+
+            <div class="form-row">
+                <mat-form-field appearance="fill" class="full-width">
+                    <mat-label>*Email</mat-label>
+                    <input type="text" disabled matInput class="email" [(ngModel)]="data.email"
+                        (change)="onChangeInput($event, 'email')">
+                </mat-form-field>
+            </div>
+
+            <button matButton="elevated" matTooltip="Change Password" class="toggleStatus" (click)="onChangeActive()">
+                Change Password <mat-icon>settings</mat-icon>
+            </button>
+
+            @if(isChangePw) {
+            <div class="form-row">
+                <mat-form-field appearance="fill" class="full-width">
+                    <mat-label>*Current Password</mat-label>
+                    <input type="password" [(ngModel)]="data.oldPassword" (change)="onChangeInput($event, 'oldPassword')" class="oldPassword" matInput>
+                </mat-form-field>
+            </div>
+
+            <div class="form-row">
+                <mat-form-field appearance="fill" class="full-width">
+                    <mat-label>*New Password</mat-label>
+                    <input type="password" matInput [(ngModel)]="data.newPassword" class="newPassword" (change)="onChangeInput($event, 'newPassword')">
+                </mat-form-field>
+            </div>
+
+            <div class="form-row">
+                <mat-form-field appearance="fill" class="full-width">
+                    <mat-label>*Confirm Password</mat-label>
+                    <input type="password" matInput class="confirmPassword" [(ngModel)]="data.confirmPw" (change)="onChangeInput($event, 'confirmPw')">
+                </mat-form-field>
+            </div>
+            }
+
+        </div>
+
+        @if(!detectError() && isShow) {
+            <mat-error>{{message}}</mat-error>
+        }
+    </mat-dialog-content>
+
+    <mat-divider></mat-divider>
+
+    <mat-dialog-actions class="profile-actions">
+        <button matButton class="detail-btn-action saveInfor" (click)="changeProfile()">Save</button>
+        
+        <button matButton class="detail-btn-action profile-close">Cancel</button>
+    </mat-dialog-actions>
+
+</div>
