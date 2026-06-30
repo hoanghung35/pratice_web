@@ -12,9 +12,6 @@ import { MaterialModule } from './material-module'
         CommonModule,
         TableComponent,
         MaterialModule
-    ],
-    declarations: [
-        DialogComponent
     ]
 })
 export class SharedModule { }
