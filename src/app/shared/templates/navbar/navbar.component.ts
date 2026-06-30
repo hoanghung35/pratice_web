@@ -1,29 +1,47 @@
-import { Component, inject } from '@angular/core';
-import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
-import { Observable } from 'rxjs';
-import { map, shareReplay } from 'rxjs/operators';
+import { Component, inject,  OnInit } from '@angular/core';
+
 
 @Component({
   selector: 'app-navbar',
   templateUrl: './navbar.component.html',
   styleUrl: './navbar.component.scss',
-  standalone: false
 })
 export class NavbarComponent {
   private breakpointObserver = inject(BreakpointObserver);
+  toggleDraw: boolean[]  = [false];
+  userName: string = 'Admin';
+  userRole: string = '';
+  email: string= '';
 
-  isHandset$: Observable<boolean> = this.breakpointObserver.observe(Breakpoints.Handset)
-    .pipe(
-      map(result => result.matches),
-      shareReplay()
-    );
+  constructor(
+    private authService: AuthService,
+    private router: Router,
+    private dialog: MatDialog
+  ){ }
 
-  expanded = {
-    mobile: false,
-    frameworks: false
-  };
+  ngOnInit(): void {
+    this.userName = this.authService.name != null ? this.authService.name : 'Admin';
+    this.userRole = this.authService.role ?? '';
+    this.email = this.authService.email ?? '';
+  }
 
-  toggleSection(section: 'mobile' | 'frameworks') {
-    this.expanded[section] = !this.expanded[section];
+  isHandset$: Observable<boolean> = this.breakpointObserver.observe(Beakpoints.Handset).pipe(
+    map(res => res.matches),
+    shareReplay()
+  );
+
+  showProfile() {
+    this.dialog.open(EditProfileComponent, {
+      maxWidth: '80rem',
+      width: '40rem',
+      panelClass: 'profile-container'
+    });
+  }
+
+  logout() {
+    this.authService.logout().subscibe({
+      next: () => this.router.navigate(['/login']),
+      error: () => console.log('Logout failed')
+    });
   }
 }
