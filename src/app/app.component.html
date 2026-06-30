@@ -1,2 +1,3 @@
-<ma-spinner *ngIf="loading$ | async"></ma-spinner>
-<router-outlet />
+<app-loading [hidden]="!(loading$ | async)"></app-loading>
+
+<router-outlet></router-outlet>
